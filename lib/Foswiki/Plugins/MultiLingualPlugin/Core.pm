@@ -76,20 +76,47 @@ sub readIconMapping {
   $this->{flags_sizes} = ['16'] unless defined $this->{flags_sizes};
 } 
 
-sub hello {
-
-  print STDERR "hello: @_\n";
-}
-
-sub validateMaketextParams {
+sub preProcessMaketextParams {
   my $text = shift;
 
-  # from Locale::Maketext
-  my $in_group = 0;
-  my @c;
+  writeDebug("called preProcessMaketextParams($text)");
 
-  while($text =~  # Iterate over chunks.
-      m/(
+  # from Locale::Maketext
+  our $in_group = 0;
+  our @c;
+
+  sub _checkChunk {
+    my $chunk = shift;
+
+    writeDebug("chunk $chunk");
+
+    if ($chunk eq '[[' || $chunk eq ']]') {
+      $chunk =~ s/(\[|\])/~$1/g;
+    } elsif ($chunk eq '[' || $chunk eq '') {       # "[" or end
+      return if $in_group; # let Locale::Maketext generate the proper error message
+      $in_group = 1;
+    } elsif ($chunk eq ']') {  # "]"
+      return unless $in_group; # let Locale::Maketext generate the proper error message
+
+      $in_group = 0;
+      my ($method, @params) = split(/,/, $c[-1], -1);
+
+      #print STDERR "method='$method'\n";
+      throw Error::Simple("invalid method $method") 
+        unless $method =~ /^(_\*|_\-?\d+|\*|\#|quant|numf|sprintf)$/;
+    } 
+
+    push @c, $chunk;
+
+    return $chunk;
+  }
+
+  $text =~ 
+      s/(
+          \[\[ # starting bracket link
+          |
+          \]\] # endint bracket link
+          |
           [^\~\[\]]+  # non-~[] stuff (Capture everything else here)
           |
           ~.       # ~[, ~], ~~, ~other
@@ -101,29 +128,11 @@ sub validateMaketextParams {
           ~           # terminal ~ ?
           |
           $
-      )/xgs
-  ) {
+      )/_checkChunk($1)/xegs;
 
-    #print STDERR "chunk = $1\n";
+  writeDebug("result: $text");
 
-    if($1 eq '[' or $1 eq '') {       # "[" or end
-      return if $in_group; # let Locale::Maketext generate the proper error message
-      $in_group = 1;
-    } elsif($1 eq ']') {  # "]"
-      return unless $in_group; # let Locale::Maketext generate the proper error message
-
-      $in_group = 0;
-      my ($method, @params) = split(/,/, $c[-1], -1);
-
-      #print STDERR "method='$method'\n";
-      throw Error::Simple("invalid method $method") 
-        unless $method =~ /^(_\*|_\-?\d+|\*|\#|quant|numf|numerate|sprintf)$/;
-    } 
-
-    push @c, $1;
-  }
-
-  return 1;
+  return $text;
 }
 
 sub TRANSLATE {
@@ -144,7 +153,7 @@ sub TRANSLATE {
 
   my $error;
   try {
-    validateMaketextParams($text);
+    $text = preProcessMaketextParams($text);
     $text = $session->i18n->maketext($text, @args);
   } catch Error::Simple with {
     $error = shift;
