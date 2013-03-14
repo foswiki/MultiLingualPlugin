@@ -155,6 +155,10 @@ sub TRANSLATE {
   try {
     $text = preProcessMaketextParams($text);
     $text = $session->i18n->maketext($text, @args);
+
+    # backwards compatibility
+    $text =~ s/&&/\&/g;
+
   } catch Error::Simple with {
     $error = shift;
     $error =~ s/ (via|at) .*$//s;
