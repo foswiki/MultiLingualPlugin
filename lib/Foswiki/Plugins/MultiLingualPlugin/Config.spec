@@ -3,7 +3,9 @@
 # This is the configuration used by the <b>MultiLingualPlugin</b>.
 
 # **BOOLEAN**
-$Foswiki::cfg{MultiLingualPlugin}{Debug} = 1;
+# If enabled then both settings - CONTENT_LANGUAGE and LANGUAGE will be kept in sync
+# where the first determines the content and the latter the interface language.
+$Foswiki::cfg{MultiLingualPlugin}{SyncUserInterface} = 0;
 
 # **STRING**
 # Default language

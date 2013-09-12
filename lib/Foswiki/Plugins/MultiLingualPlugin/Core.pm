@@ -24,9 +24,10 @@ use Locale::Country;
 use Error qw(:try);
 
 our $doneAliases = 0;
+use constant DEBUG => 0;
 
 sub writeDebug {
-  print STDERR "MultiLingualPlugin::Core - $_[0]\n" if $Foswiki::cfg{MultiLingualPlugin}{Debug};
+  print STDERR "MultiLingualPlugin::Core - $_[0]\n" if DEBUG;
 }
 
 sub new {
@@ -76,6 +77,7 @@ sub readIconMapping {
   $this->{flags_sizes} = ['16'] unless defined $this->{flags_sizes};
 } 
 
+# secure text before passing ot to Locale::Maketext
 sub preProcessMaketextParams {
   my $text = shift;
 
@@ -138,10 +140,47 @@ sub preProcessMaketextParams {
 sub TRANSLATE {
   my ($this, $session, $params, $theTopic, $theWeb) = @_;
 
-  my $currentLanguage = $session->i18n->language();
+  my $request = Foswiki::Func::getRequestObject();
 
-  my $text = $params->{$currentLanguage};
-  $text = $params->{_DEFAULT} || $params->{default} || $params->{string} || '' unless defined $text; 
+  # param
+  my $langCode = $params->{language};
+
+  # preference value
+  $langCode = Foswiki::Func::getPreferencesValue("CONTENT_LANGUAGE")
+    if !defined($langCode) || $langCode eq '';
+
+  if (defined $langCode && $langCode ne '') {
+    if ($langCode eq 'detect') {
+      $langCode = '';
+    } else {
+      $langCode = Foswiki::Func::expandCommonVariables($langCode);
+    }
+  } 
+
+  # i18n
+  $langCode =  $session->i18n->language()
+    if !defined($langCode) || $langCode eq '';
+
+  my $key = $langCode;
+  $key =~ s/-/_/g; # to be able to specify a tai translation using zh_tw="..." as a parameter
+
+  my $text = $params->{$key};
+  $text = $params->{_DEFAULT} unless defined $text; 
+
+  return '' unless defined $text;
+
+  my $lexiconTopic = $params->{lexicon};
+  $lexiconTopic = Foswiki::Func::getPreferencesValue("CONTENT_LEXICON");
+
+  if (defined $lexiconTopic && $lexiconTopic ne "") {
+    my $entry = $this->getLexiconEntry($lexiconTopic, $text);
+    my $languageName = getLanguageOfCode($langCode);
+    if ($entry && $languageName) {
+      my $key = fieldTitle2FieldName("$languageName ($langCode)");
+      $text = $entry->{$key} if defined $entry->{$key};
+    }
+  }
+    
 
   my $args = $params->{args};
   $args = '' unless defined $args;
@@ -225,16 +264,24 @@ sub LANGUAGES {
   }
 
   my @result = ();
+  my $count = 0;
   foreach my $record (@records) {
     next if defined $include && $record->{code} !~ /$include/;
     next if defined $exclude && $record->{code} =~ /$exclude/;
     my $item = $format;
+    $count++;
+    $item =~ s/\$index/$count/g;
     $item =~ s/\$icon(?:\((.*?)\))?/$this->getFlagImage($record->{code}, $1||16)/ge;
     $item =~ s/\$name/$record->{name}/g;
     $item =~ s/\$code/$record->{code}/g;
     $item =~ s/\$language/$record->{language}/g;
     $item =~ s/\$label/$record->{label}/g;
     $item =~ s/\$country/$record->{country}/g;
+
+    # backwards compatibility
+    $item =~ s/\$langname/$record->{name}/g;
+    $item =~ s/\$langtag/$record->{code}/g;
+
     my $mark = ($selection =~ / \Q$record->{code}\E /) ? $marker : '';
     $item =~ s/\$marker/$mark/g;
     push @result, $item;
@@ -246,7 +293,10 @@ sub LANGUAGES {
   my $header = $params->{header} || '';
   my $footer = $params->{footer} || '';
 
-  return Foswiki::Func::decodeFormatTokens($header.join($separator, @result).$footer);
+  my $result = Foswiki::Func::decodeFormatTokens($header.join($separator, @result).$footer);
+  $result =~ s/\$count/$count/g;
+
+  return $result;
 }
 
 sub getFlagImage {
@@ -255,7 +305,7 @@ sub getFlagImage {
   my $flag = $this->getFlag($code);
   return '' unless $flag;
 
-  my $format = "<img src='%PUBURLPATH%/%SYSTEMWEB%/MultiLingualPlugin/flags/\$size/\$flag' width='\$size' />";
+  my $format = "<img src='%PUBURLPATH%/%SYSTEMWEB%/MultiLingualPlugin/flags/\$size/\$flag' width='\$size' alt='\$language' />";
 
   my $bestSize = 16;
   foreach my $s (@{$this->{flags_sizes}}) {
@@ -330,6 +380,41 @@ sub getLabelOfCode {
   }
 
   return $label;
+}
+
+sub getLexiconEntry {
+  my ($this, $lexiconTopic, $text) = @_;
+
+  my $baseWeb = $Foswiki::Plugins::SESSION->{webName};
+  my ($web, $topic) = Foswiki::Func::normalizeWebTopicName($baseWeb, $lexiconTopic);
+
+  my $lexicon = $this->{lexicons}{$web.'.'.$topic};
+  unless (defined $lexicon) {
+    $lexicon = {};
+    writeDebug("reading lexicon from $web.$topic");
+
+    my ($meta) = Foswiki::Func::readTopic($web, $topic);
+    foreach my $entry  ($meta->find("LEXICON")) {
+      next unless $entry->{String};
+      $lexicon->{$entry->{String}} = $entry;
+    }
+
+    $this->{lexicons}{$web.'.'.$topic} = $lexicon;
+  }
+
+  return $lexicon->{$text};
+}
+
+# from Foswiki::Form
+sub fieldTitle2FieldName {
+  my ($text) = @_;
+  return '' unless defined($text);
+
+  $text =~ s/!//g;
+  $text =~ s/<nop>//g;    # support <nop> character in title
+  $text =~ s/[^A-Za-z0-9_\.]//g;
+
+  return $text;
 }
 
 1;

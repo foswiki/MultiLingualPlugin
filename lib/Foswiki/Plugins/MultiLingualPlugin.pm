@@ -21,9 +21,9 @@ use warnings;
 use Foswiki::Func ();
 use Foswiki::Plugins ();
 
-our $VERSION = '0.01';
-our $RELEASE = '0.01';
-our $SHORTDESCRIPTION = 'Support multi lingual Foswiki';
+our $VERSION = '0.02';
+our $RELEASE = '0.02';
+our $SHORTDESCRIPTION = 'Support for a multi lingual Foswiki';
 our $NO_PREFS_IN_TOPIC = 1;
 our $core;
 
@@ -39,23 +39,36 @@ sub initPlugin {
 sub beforeSaveHandler {
   my ($text, $topic, $web, $meta) = @_;
 
+  # clear lexicon cache
+  if ($meta->find("LEXICON") && $core) {
+    my ($lexiconWeb, $lexiconTopic) = Foswiki::Func::normalizeWebTopicName($web, $topic);
+    delete $core->{lexicons}{$lexiconWeb.'.'.$lexiconTopic};
+  }
+
+  return unless $Foswiki::cfg{MultiLingualPlugin}{SyncUserInterface};
+
   my $contentLanguage = $meta->get('PREFERENCE', 'CONTENT_LANGUAGE');
-  return unless defined $contentLanguage;
+  if (defined $contentLanguage) {
 
-  $contentLanguage = $contentLanguage->{value};
-  return if $contentLanguage eq '' || $contentLanguage eq 'detect';
+    $contentLanguage = $contentLanguage->{value};
+    if ($contentLanguage ne '' && $contentLanguage ne 'detect') {
 
-  #my $session = $Foswiki::Plugins::SESSION;
-  #my $enabledLanguages = $session->i18n->enabled_languages();
-  #return unless defined $enabledLanguages{$contentLanguage};
+      #my $session = $Foswiki::Plugins::SESSION;
+      #my $enabledLanguages = $session->i18n->enabled_languages();
+      #return unless defined $enabledLanguages{$contentLanguage};
 
-  # sync content language and interface language
-  $meta->putKeyed('PREFERENCE', { 
-    name => 'LANGUAGE', 
-    title => 'LANGUAGE', 
-    type => 'Local', 
-    value => $contentLanguage} 
-  );
+      # sync content language and interface language
+      $meta->putKeyed('PREFERENCE', { 
+        name => 'LANGUAGE', 
+        title => 'LANGUAGE', 
+        type => 'Local', 
+        value => $contentLanguage} 
+      );
+      return;
+    }
+  }
+
+  $meta->remove('PREFERENCE', 'LANGUAGE');
 }
 
 sub getCore {

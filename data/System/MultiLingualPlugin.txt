@@ -1,11 +1,174 @@
+%META:TOPICINFO{author="micha" comment="reprev" date="1378984723" format="1.1" reprev="4" version="4"}%
 ---+!! %TOPIC%
 %SHORTDESCRIPTION%
 
 %TOC%
 
+This plugin enables you to create wiki content in multiple languages. While Foswiki normally supports over 20 languages to internationalize its _user interface_,
+content is _not_ translated in general. All of the standard documentation for Foswiki is shipped in English out of the box. Multi-lingual wikis go beyond pure
+translation of the user interface. Their main purpose is to maintain the wiki _content_ in multiple languages presenting the matching translation according to
+the user's language preferences. 
+
+This plugin introduces a new macro =%TRANSLATE= which resembles very much the standard =%MAKETEXT= macro at first glance. However it adds a lot more flexibility
+in maintaining translation the wiki way. While =%MAKETEXT= relies on =.po= translation files stored somewhere on your Foswiki installation on the file system, translations
+for =%TRANSLATE= can be provided as wiki content itself, or inlined as part of the macro call itself. As a last resort will it reuse any translation available
+in the system's =.po= lexicon.
+
 ---++ Usage
 
+---+++ Specifying the target language
+The target language to translate strings to can be specified in various ways:
+
+   1 use the =language= parameter to =%TRANSLATE=,
+   2 use the =CONTENT_LANGUAGE= preference variable or
+   3 default to the user's language settings in the browser
+
+... in the given priority order. Note that you might also use url parameters to configure the output of =%TRANSLATE= using this code:
+
+<verbatim class="tml">
+%TRANSLATE{"some source text" language="%URLPARAM{"content_language"}%"}%
+</verbatim>
+
+... or by specifying a wiki application to complute the =CONTENT_LANGUAGE= preference variable, e.g.
+
+<verbatim class="tml">   * Set CONTENT_LANGUAGE = %URLPARAM{"content_language" default="en"}%</verbatim>
+
+---+++ Inline translations
+
+Translations can be specified inline:
+
+<verbatim class="tml">
+%TRANSLATE{
+  "This here is not a pipe" 
+  de="Das hier is keine Pfeife" 
+  fr="Ceci n'est pas une pipe"
+}%
+</verbatim>
+
+The macro will return the string matching the selected target language. Note that you might also make use of =%INCLUDE= to
+switch to different content maintained somewhere else in your wiki:
+
+<verbatim class="tml">
+%TRANSLATE{
+  "$percntINCLUDE{"DefaultText"}$percnt"
+  de="$percntINCLUDE{"GermanText"}$percnt"
+  en="$percntINCLUDE{"EnglishText"}$percnt"
+  fr="$percntINCLUDE{"FrenchText"}$percnt"
+}%
+</verbatim>
+
+---+++ Lexicon meta data
+
+To separate the application of translated strings from their translation you might specify a lexicon, either
+
+   * using the =lexicon= parameter to =%TRANSLATE= or
+   * using the =CONTENT_LEXICON= preference variable
+
+The lexicon is a topic holding =%META:LEXICON= records as produced by the Foswiki:Extensions/MetaDataPlugin
+and specified in the [[LexiconForm]] shipped with this plugin.
+
+---++ Syntax
+
+---+++ TRANSLATE
+This is the work horse returning a string based on the selected target language.
+
+| *Parameter* | *Description* | *Default* |
+| ="string"= | (required) the source string to be translated; it serves as a lookup key into the lexicon | |
+| =language="&lt;lang-code>"= | the language code of the target language | |
+| =lexicon=="&lt;topic-name>"= | the topic holding the lexicon meta data | |
+| =args="arg1, arg2, ..."= | arguments to be inserted into the translated string | |
+| =splitargs="&lt;separator>"= | expression to separate items in the =args= list | =\s*,\s*= |
+
+A =string= as well as a translation may contain placeholder such as =[_1]=, =[_2]=, =[_3]= ... to refer to the
+first/second/third/... argument in the =args= list.
+
+Example:
+
+<verbatim class="tml">
+%TRANSLATE{"Sorry, I haven't seen [_1] or [_2] recently." args="Dave, Audrey"}%
+</verbatim>
+
+Similarly, these tokens come in handy dealing with numbers in translations (see CPAN:Locale::Maketext):
+
+Quantifying nounts:
+
+<verbatim class="tml">
+%TRANSLATE{"Your search matched [quant,_1,document,documents,no documents]" args="0"}%
+%TRANSLATE{"Your search matched [quant,_1,document,documents,no documents]" args="1"}%
+%TRANSLATE{"Your search matched [quant,_1,document,documents,no documents]" args="2"}%
+</verbatim>
+
+Format numbers according to this language's conventions.
+
+<verbatim class="tml">
+%TRANSLATE{"Sum taxes [numf,_1]" args="1234.56"}%
+</verbatim>
+
+Wrapper around Perl's normal =sprintf= function.
+
+<verbatim class="tml">
+%TRANSLATE{"Couldn't access datanode [sprintf,%f.2,_1]." args="12345"}%
+</verbatim>
+
+---+++ LANGUAGES
+This overrides the standard =%LANGUAGES= macro shipped with Foswiki providing a much improved one.
+
+It iterates over the list of given languages and returns information for each language found.
+
+| *Parameter* | *Description* | *Default* |
+| ="&lt;lang1>, &lt;lang2>, ..."= | list of languages to render information for | languages enabled in Foswiki's =configure= |
+| =header= | header string to be prepended to the output result; omitted when no language in the list was found | |
+| =footer= | footer string to be appended to the output; omitted when no language was found | |
+| =separator= | string separating items being formatted | =$n= |
+| =format= | string to render information for each language found, see below for known format tokens | =$language= |
+| =selection= | depicts a language in the list to be "selected" which activates the =$marker= string as defined below | |
+| =marker= | string to be inserted into the =format= when the current language matches the =selection= | =selected="selected"= |
+| =include= | regular expression a language must match for it to be included in the output | |
+| =exclude | regular expression a language must _not_ match for it to be included in the output | |
+| =sort= | 
+
+Each language has got a list of properties that can be referred to in =format= and =sort=. 
+
+   * language: the name of the language latin1 encoded, e.g. Bulgarian
+   * name: the name of the language, locally encoded, e.g. Български
+   * code: the language code, e.g. =bg=
+   * label: the fully disambiguated name of this language, e.g. Chinese (Taiwan, Province of China)
+   * icon: an image flag for this language, e.g. <img src="%PUBURLPATH%/System/MultiLingualPlugin/flags/16/Bulgaria.png" width="16" alt="Bulgarian" />
+   * country: location where this language is spoken, e.g. Bulgaria
+
+This information can be used as tokens in a =format= string, such as
+
+   * =$language=
+   * =$name= (or =$langname= ... provided for backwards compatibility)
+   * =$code= (or =$langtag= ... provided for backwards compatibility)
+   * =$label=
+   * =$icon=, =$icon(&lt;size>)= (the html img with a country flag; use the second form to render a flag in different sizes)
+   * =$country= 
+
+In addition we have
+
+   * =$marker= (see above for =selection= and =marker=)
+   * =$index= running index of the language being processed
+   * =$count= the total numbers of languages found
+
+Standard escape tokens, i.e. =$n=, =$percnt= and =$dollar= are supported as well.
+
+<div class="foswikiHelp">
+%X% Caution: To display the localized language name correctly by using the =$name= format token your Foswiki's ={Site}{CharSet}= should be set to utf-8.
+This is recommended for any new Foswiki installation. See Foswiki:Extensions/CharsetConvertorContrib. for a tool to convert existing content to utf-8.
+</div>
+
 ---++ Examples
+
+Render a full table of all known languages:
+
+%LANGUAGES{
+  header="| *#* | *Language* | *Name* | *Code* | *Country* | *Flag* |$n"
+  format="| $index | $language | $name | $code | $country | $icon(32) |"
+  separator="$n"
+  footer="$n$n Found $count languages"
+  sort="language"
+}%
 
 ---++ Installation Instructions
 

@@ -1,4 +1,5 @@
 data/System/MultiLingualPlugin.txt 0644
+data/System/LexiconForm.txt 0644
 lib/Foswiki/Plugins/MultiLingualPlugin/Config.spec 0644
 lib/Foswiki/Plugins/MultiLingualPlugin/Core.pm 0644
 lib/Foswiki/Plugins/MultiLingualPlugin.pm 0644

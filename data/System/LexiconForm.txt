@@ -1,0 +1,45 @@
+%META:TOPICINFO{author="micha" comment="reprev" date="1378978009" format="1.1" reprev="1" version="1"}%
+%META:TOPICPARENT{name="MultiLingualPlugin"}%
+---+!! %TOPIC%
+
+| *Name:*| *Type:* | *Size:* | *Values:* | *Description:* | *Attributes:* |
+| String | text | 80 | | | M |
+| English (en) | text | 80 | | | |
+| German (de) | text | 80 | | | |
+| French (fr) | text | 80 | | | |
+
+This is a simple lexicon to define the format of LEXICON meta data.  To add
+more rows to the table, first copy the topic to another web. Make sure it still
+is called "<nop>LexiconForm". Then add more rows to the table for each required
+target language that you want to specify translations for.
+
+Make sure you use one of the known language names including their language code:
+
+<pre Xstyle="display:none">
+%LANGUAGES{format="| $language ($code) | text | 80 | | | |"}%
+</pre>
+
+<verbatim>
+| Bulgarian (bg) | text | 80 | | | |
+| Chinese (zh-cn) | text | 80 | | | |
+| Chinese (zh-tw) | text | 80 | | | |
+| Czech (cs) | text | 80 | | | |
+| Danish (da) | text | 80 | | | |
+| Dutch (nl) | text | 80 | | | |
+| English (en) | text | 80 | | | |
+| Finnish (fi) | text | 80 | | | |
+| French (fr) | text | 80 | | | |
+| German (de) | text | 80 | | | |
+| Italian (it) | text | 80 | | | |
+| Japanese (ja) | text | 80 | | | |
+| Korean (ko) | text | 80 | | | |
+| Norwegian (no) | text | 80 | | | |
+| Polish (pl) | text | 80 | | | |
+| Portuguese (pt-br) | text | 80 | | | |
+| Portuguese (pt) | text | 80 | | | |
+| Russian (ru) | text | 80 | | | |
+| Spanish (es) | text | 80 | | | |
+| Swedish (sv) | text | 80 | | | |
+| Turkish (tr) | text | 80 | | | |
+| Ukrainian (uk) | text | 80 | | | |
+</verbatim>
