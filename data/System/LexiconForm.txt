@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="micha" comment="reprev" date="1378978009" format="1.1" reprev="1" version="1"}%
+%META:TOPICINFO{author="ProjectContributor" comment="reprev" date="1378986032" format="1.1" reprev="2" version="2"}%
 %META:TOPICPARENT{name="MultiLingualPlugin"}%
 ---+!! %TOPIC%
 
@@ -13,11 +13,7 @@ more rows to the table, first copy the topic to another web. Make sure it still
 is called "<nop>LexiconForm". Then add more rows to the table for each required
 target language that you want to specify translations for.
 
-Make sure you use one of the known language names including their language code:
-
-<pre Xstyle="display:none">
-%LANGUAGES{format="| $language ($code) | text | 80 | | | |"}%
-</pre>
+Make sure you use one of the known language names including their language code in the following format:
 
 <verbatim>
 | Bulgarian (bg) | text | 80 | | | |

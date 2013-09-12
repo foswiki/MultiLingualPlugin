@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="micha" comment="reprev" date="1378984723" format="1.1" reprev="4" version="4"}%
+%META:TOPICINFO{author="ProjectContributor" comment="reprev" date="1378985817" format="1.1" reprev="4" version="4"}%
 ---+!! %TOPIC%
 %SHORTDESCRIPTION%
 
@@ -163,6 +163,7 @@ This is recommended for any new Foswiki installation. See Foswiki:Extensions/Cha
 Render a full table of all known languages:
 
 %LANGUAGES{
+  "bg, zh-cn, zh-tw, cs, da, nl, en, fi, fr, de, it, ja, ko, no, pl, pt, pt-br, ru, es, sv, tr, uk"
   header="| *#* | *Language* | *Name* | *Code* | *Country* | *Flag* |$n"
   format="| $index | $language | $name | $code | $country | $icon(32) |"
   separator="$n"

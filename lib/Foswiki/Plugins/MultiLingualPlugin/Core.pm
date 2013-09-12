@@ -161,6 +161,8 @@ sub TRANSLATE {
   $langCode =  $session->i18n->language()
     if !defined($langCode) || $langCode eq '';
 
+  $langCode = lc($langCode);
+
   my $key = $langCode;
   $key =~ s/-/_/g; # to be able to specify a tai translation using zh_tw="..." as a parameter
 
@@ -170,14 +172,15 @@ sub TRANSLATE {
   return '' unless defined $text;
 
   my $lexiconTopic = $params->{lexicon};
-  $lexiconTopic = Foswiki::Func::getPreferencesValue("CONTENT_LEXICON");
+  $lexiconTopic = Foswiki::Func::getPreferencesValue("CONTENT_LEXICON")
+    if !defined($lexiconTopic) || $lexiconTopic eq '';
 
   if (defined $lexiconTopic && $lexiconTopic ne "") {
     my $entry = $this->getLexiconEntry($lexiconTopic, $text);
     my $languageName = getLanguageOfCode($langCode);
     if ($entry && $languageName) {
       my $key = fieldTitle2FieldName("$languageName ($langCode)");
-      $text = $entry->{$key} if defined $entry->{$key};
+      $text = $entry->{$key} if defined $entry->{$key} && $entry->{key} ne '';
     }
   }
     
