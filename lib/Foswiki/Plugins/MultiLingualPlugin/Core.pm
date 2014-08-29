@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
-# MultiLingualPlugin is Copyright (C) 2013 Michael Daum http://michaeldaumconsulting.com
+# MultiLingualPlugin is Copyright (C) 2013-2014 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -24,10 +24,10 @@ use Locale::Country;
 use Error qw(:try);
 
 our $doneAliases = 0;
-use constant DEBUG => 0;
+use constant TRACE => 0;
 
 sub writeDebug {
-  print STDERR "MultiLingualPlugin::Core - $_[0]\n" if DEBUG;
+  print STDERR "MultiLingualPlugin::Core - $_[0]\n" if TRACE;
 }
 
 sub new {
