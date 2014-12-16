@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" comment="reprev" date="1378985817" format="1.1" reprev="4" version="4"}%
+%META:TOPICINFO{author="ProjectContributor" comment="" date="1418744195" format="1.1"  version="1"}%
 ---+!! %TOPIC%
 %SHORTDESCRIPTION%
 
@@ -139,9 +139,11 @@ Each language has got a list of properties that can be referred to in =format= a
 This information can be used as tokens in a =format= string, such as
 
    * =$language=
+   * =$language_name=
    * =$name= (or =$langname= ... provided for backwards compatibility)
    * =$code= (or =$langtag= ... provided for backwards compatibility)
    * =$label=
+   * =$label_name=
    * =$icon=, =$icon(&lt;size>)= (the html img with a country flag; use the second form to render a flag in different sizes)
    * =$country= 
 
@@ -160,6 +162,7 @@ This is recommended for any new Foswiki installation. See Foswiki:Extensions/Cha
 
 ---++ Examples
 
+---+++ All languages
 Render a full table of all known languages:
 
 %LANGUAGES{
@@ -170,6 +173,18 @@ Render a full table of all known languages:
   footer="$n$n Found $count languages"
   sort="language"
 }%
+
+---+++ Select language
+
+<select name="lang">
+%LANGUAGES{
+  format="<option value='$code' $marker>$label_name</option>"
+  marker="selected='selected'"
+  selection="%LANGUAGE%"
+  separator="$n  "
+  sort="label"
+}%
+</select
 
 ---++ Installation Instructions
 
@@ -186,6 +201,7 @@ Render a full table of all known languages:
 |  Release: | %$RELEASE% |
 |  Version: | %$VERSION% |
 |  Change History: | <!-- versions below in reverse order -->&nbsp; |
+|  16 Dec 2014 | added =$label_name= and =$language_name= to ease select boxes |
 |   1 Nov 2013 | initial release |
 |  Dependencies: | %$DEPENDENCIES% |
 |  Home page: | Foswiki:Extensions/%TOPIC% |

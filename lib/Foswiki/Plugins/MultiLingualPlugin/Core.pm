@@ -180,7 +180,7 @@ sub TRANSLATE {
     my $languageName = getLanguageOfCode($langCode);
     if ($entry && $languageName) {
       my $key = fieldTitle2FieldName("$languageName ($langCode)");
-      $text = $entry->{$key} if defined $entry->{$key} && $entry->{key} ne '';
+      $text = $entry->{$key} if defined $entry->{$key} && $entry->{$key} ne '';
     }
   }
     
@@ -277,6 +277,8 @@ sub LANGUAGES {
     $item =~ s/\$icon(?:\((.*?)\))?/$this->getFlagImage($record->{code}, $1||16)/ge;
     $item =~ s/\$name/$record->{name}/g;
     $item =~ s/\$code/$record->{code}/g;
+    $item =~ s/\$label_name(?:\((.*?)\))?/$record->{label}.(($record->{label} eq $record->{name})?'':($1||' - ').$record->{name})/ge;
+    $item =~ s/\$language_name(?:\((.*?)\))?/$record->{language}.(($record->{language} eq $record->{name})?'':($1||' - ').$record->{name})/ge;
     $item =~ s/\$language/$record->{language}/g;
     $item =~ s/\$label/$record->{label}/g;
     $item =~ s/\$country/$record->{country}/g;
