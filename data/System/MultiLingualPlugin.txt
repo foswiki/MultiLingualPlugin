@@ -184,7 +184,7 @@ Render a full table of all known languages:
   separator="$n  "
   sort="label"
 }%
-</select
+</select>
 
 ---++ Installation Instructions
 
@@ -196,11 +196,12 @@ Render a full table of all known languages:
 -->
 
 |  Author(s): | Michael Daum|
-|  Copyright: | &copy; 2013-2014 Michael Daum http://michaeldaumconsulting.com |
+|  Copyright: | &copy; 2013-2015 Michael Daum http://michaeldaumconsulting.com |
 |  License: | [[http://www.gnu.org/licenses/gpl.html][GPL (Gnu General Public License)]] |
 |  Release: | %$RELEASE% |
 |  Version: | %$VERSION% |
 |  Change History: | <!-- versions below in reverse order -->&nbsp; |
+|  17 Jul 2015 | fixed detection of CONTENT_LEXICON and extraction of correct string for a given language |
 |  16 Dec 2014 | added =$label_name= and =$language_name= to ease select boxes |
 |   1 Nov 2013 | initial release |
 |  Dependencies: | %$DEPENDENCIES% |

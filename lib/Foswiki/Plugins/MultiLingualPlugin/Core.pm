@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
-# MultiLingualPlugin is Copyright (C) 2013-2014 Michael Daum http://michaeldaumconsulting.com
+# MultiLingualPlugin is Copyright (C) 2013-2015 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -171,20 +171,31 @@ sub TRANSLATE {
 
   return '' unless defined $text;
 
-  my $lexiconTopic = $params->{lexicon};
-  $lexiconTopic = Foswiki::Func::getPreferencesValue("CONTENT_LEXICON")
-    if !defined($lexiconTopic) || $lexiconTopic eq '';
+  $theWeb = $params->{web} if defined $params->{web};
 
-  if (defined $lexiconTopic && $lexiconTopic ne "") {
-    my $entry = $this->getLexiconEntry($lexiconTopic, $text);
-    my $languageName = getLanguageOfCode($langCode);
-    if ($entry && $languageName) {
-      my $key = fieldTitle2FieldName("$languageName ($langCode)");
-      $text = $entry->{$key} if defined $entry->{$key} && $entry->{$key} ne '';
+  my $lexiconTopics = $params->{lexicon};
+  $lexiconTopics = Foswiki::Func::getPreferencesValue("CONTENT_LEXICON", $theWeb)
+    if !defined($lexiconTopics) || $lexiconTopics eq '';
+
+  #print STDERR "translate $text, web=$theWeb, topic=$theTopic, lexiconTopics=".($lexiconTopics||'')."\n";
+
+  if (defined $lexiconTopics && $lexiconTopics ne "") {
+    $lexiconTopics = Foswiki::Func::expandCommonVariables($lexiconTopics, $theTopic, $theWeb);
+    my $lexiconWeb = $theWeb;
+    foreach my $lexiconTopic (split(/\s*,\s*/, $lexiconTopics)) {
+      ($lexiconWeb, $lexiconTopic) = Foswiki::Func::normalizeWebTopicName($lexiconWeb, $lexiconTopic);
+      #print STDERR "... reading lexicon $lexiconWeb.$lexiconTopic\n";
+      my $entry = $this->getLexiconEntry($lexiconWeb, $lexiconTopic, $text);
+      my $languageName = getLanguageOfCode($langCode);
+      my $translation;
+      if ($entry && $languageName) {
+        my $key = fieldTitle2FieldName("$languageName ($langCode)");
+        $translation = $entry->{$key} if defined $entry->{$key} && $entry->{$key} ne '';
+      }
+      return $translation if defined $translation && $translation ne "";
     }
   }
     
-
   my $args = $params->{args};
   $args = '' unless defined $args;
 
@@ -222,7 +233,7 @@ sub LANGUAGES {
   $format = '   * $language' unless defined $format;
 
   my $separator = $params->{separator};
-  $separator = '$n' unless defined $separator;
+  $separator = "\n" unless defined $separator;
 
   my $selection = $params->{selection} || '';
   $selection =~ s/\,/ /g;
@@ -388,10 +399,7 @@ sub getLabelOfCode {
 }
 
 sub getLexiconEntry {
-  my ($this, $lexiconTopic, $text) = @_;
-
-  my $baseWeb = $Foswiki::Plugins::SESSION->{webName};
-  my ($web, $topic) = Foswiki::Func::normalizeWebTopicName($baseWeb, $lexiconTopic);
+  my ($this, $web, $topic, $text) = @_;
 
   my $lexicon = $this->{lexicons}{$web.'.'.$topic};
   unless (defined $lexicon) {

@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
-# MultiLingualPlugin is Copyright (C) 2013-2014 Michael Daum http://michaeldaumconsulting.com
+# MultiLingualPlugin is Copyright (C) 2013-2015 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,8 +21,8 @@ use warnings;
 use Foswiki::Func ();
 use Foswiki::Plugins ();
 
-our $VERSION = '2.00';
-our $RELEASE = '2.00';
+our $VERSION = '2.10';
+our $RELEASE = '2.10';
 our $SHORTDESCRIPTION = 'Support for a multi lingual Foswiki';
 our $NO_PREFS_IN_TOPIC = 1;
 our $core;
@@ -36,14 +36,12 @@ sub initPlugin {
   return 1;
 }
 
+sub finishPlugin {
+  undef $core;
+}
+
 sub beforeSaveHandler {
   my ($text, $topic, $web, $meta) = @_;
-
-  # clear lexicon cache
-  if ($meta->find("LEXICON") && $core) {
-    my ($lexiconWeb, $lexiconTopic) = Foswiki::Func::normalizeWebTopicName($web, $topic);
-    delete $core->{lexicons}{$lexiconWeb.'.'.$lexiconTopic};
-  }
 
   return unless $Foswiki::cfg{MultiLingualPlugin}{SyncUserInterface};
 
