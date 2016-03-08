@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
-# MultiLingualPlugin is Copyright (C) 2013-2015 Michael Daum http://michaeldaumconsulting.com
+# MultiLingualPlugin is Copyright (C) 2013-2016 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -38,7 +38,7 @@ sub new {
   if (defined $Foswiki::cfg{MultiLingualPlugin}{Aliases} && !$doneAliases) {
     foreach my $key (keys %{$Foswiki::cfg{MultiLingualPlugin}{Aliases}}) {
       my $val = $Foswiki::cfg{MultiLingualPlugin}{Aliases}{$key};
-      Locale::Country::alias_code($key => $val, LOCALE_CODE_ALPHA_2);
+      Locale::Country::add_country_code_alias($val, $key, LOCALE_CODE_ALPHA_2);
     }
     $doneAliases = 1;
   }
@@ -168,8 +168,9 @@ sub TRANSLATE {
 
   my $text = $params->{$key};
   $text = $params->{_DEFAULT} unless defined $text; 
+  $text = '' unless defined $text;
 
-  return '' unless defined $text;
+  return '' if $text eq '';
 
   $theWeb = $params->{web} if defined $params->{web};
 

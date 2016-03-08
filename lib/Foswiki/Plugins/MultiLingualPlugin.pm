@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
-# MultiLingualPlugin is Copyright (C) 2013-2015 Michael Daum http://michaeldaumconsulting.com
+# MultiLingualPlugin is Copyright (C) 2013-2016 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,8 +21,8 @@ use warnings;
 use Foswiki::Func ();
 use Foswiki::Plugins ();
 
-our $VERSION = '2.10';
-our $RELEASE = '2.10';
+our $VERSION = '2.20';
+our $RELEASE = '08 Mar 2016';
 our $SHORTDESCRIPTION = 'Support for a multi lingual Foswiki';
 our $NO_PREFS_IN_TOPIC = 1;
 our $core;
@@ -30,7 +30,14 @@ our $core;
 sub initPlugin {
 
   Foswiki::Func::registerTagHandler('LANGUAGES', sub { return getCore()->LANGUAGES(@_); });
-  Foswiki::Func::registerTagHandler('DEFAULTLANGUAGE', sub { return $Foswiki::cfg{MultiLingualPlugin}{DefaultLanguage} || 'en'; });
+  Foswiki::Func::registerTagHandler('DEFAULTLANGUAGE', sub { 
+    my $session = shift;
+    if ($Foswiki::cfg{MultiLingualPlugin}{SyncUserInterface}) {
+      return $session->i18n->language();
+    } else {
+      return $Foswiki::cfg{MultiLingualPlugin}{DefaultLanguage} || 'en'; 
+    }
+  });
   Foswiki::Func::registerTagHandler('TRANSLATE', sub { return getCore()->TRANSLATE(@_); });
 
   return 1;
