@@ -131,7 +131,7 @@ It iterates over the list of given languages and returns information for each la
 Each language has got a list of properties that can be referred to in =format= and =sort=. 
 
    * language: the name of the language latin1 encoded, e.g. Bulgarian
-   * name: the name of the language, locally encoded, e.g. Български
+   * name: the name of the language, locally encoded, e.g. &#x411;&#x44A;&#x43B;&#x433;&#x430;&#x440;&#x441;&#x43A;&#x438;
    * code: the language code, e.g. =bg=
    * label: the fully disambiguated name of this language, e.g. Chinese (Taiwan, Province of China)
    * icon: an image flag for this language, e.g. <img src="%PUBURLPATH%/System/MultiLingualPlugin/flags/16/Bulgaria.png" width="16" alt="Bulgarian" />
