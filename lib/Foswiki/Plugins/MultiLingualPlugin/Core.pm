@@ -203,6 +203,13 @@ sub TRANSLATE {
   my $split = $params->{splitargs} || '\s*,\s*';
   my @args = split($split, $args);
 
+  # gather enumerated args arg1, arg2, ...
+  foreach my $key (keys %$params) {
+    if ($key =~ /^arg(\d+)$/) {
+      $args[$1] = $params->{$key};
+    }
+  }
+
   push @args, '' for (0...100); # fill up args in case there are more placeholders in text
 
   my $error;

@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" comment="" date="1418744195" format="1.1"  version="1"}%
+%META:TOPICINFO{author="ProjectContributor" comment="" date="1464687321" format="1.1" version="1"}%
 ---+!! %TOPIC%
 %FORMFIELD{"Description"}%
 
@@ -75,9 +75,10 @@ This is the work horse returning a string based on the selected target language.
 | *Parameter* | *Description* | *Default* |
 | ="string"= | (required) the source string to be translated; it serves as a lookup key into the lexicon | |
 | =language="&lt;lang-code>"= | the language code of the target language | |
-| =lexicon=="&lt;topic-name>"= | the topic holding the lexicon meta data | |
+| =lexicon="&lt;topic-name>"= | the topic holding the lexicon meta data | |
 | =args="arg1, arg2, ..."= | arguments to be inserted into the translated string | |
 | =splitargs="&lt;separator>"= | expression to separate items in the =args= list | =\s*,\s*= |
+| =arg&lt;N>="..."= | alternative way to specify arguments, e.g. =%<nop>TRANSLATE{"... " arg1="..." arg2="..." ...}%= | |
 
 A =string= as well as a translation may contain placeholder such as =[_1]=, =[_2]=, =[_3]= ... to refer to the
 first/second/third/... argument in the =args= list.
@@ -124,8 +125,8 @@ It iterates over the list of given languages and returns information for each la
 | =selection= | depicts a language in the list to be "selected" which activates the =$marker= string as defined below | |
 | =marker= | string to be inserted into the =format= when the current language matches the =selection= | =selected="selected"= |
 | =include= | regular expression a language must match for it to be included in the output | |
-| =exclude | regular expression a language must _not_ match for it to be included in the output | |
-| =sort= | 
+| =exclude= | regular expression a language must _not_ match for it to be included in the output | |
+| =sort= | sorting order of output; can be =on=, =off=, =code=, =country=, =name=, =label= or =language= | =language= |
 
 Each language has got a list of properties that can be referred to in =format= and =sort=. 
 
@@ -202,6 +203,7 @@ in his/her browser or the value of ={DefaultLanguage}= as configured to this plu
 %$DEPENDENCIES%
 
 ---++ Change History
+|  31 May 2016 | added =arg&lt;N>= way of specifying arguments to =%TRANSLATE= |
 |   8 Mar 2016 | fixed error using latest Locale::Country |
 |  17 Jul 2015 | fixed detection of CONTENT_LEXICON and extraction of correct string for a given language |
 |  16 Dec 2014 | added =$label_name= and =$language_name= to ease select boxes |
@@ -210,11 +212,11 @@ in his/her browser or the value of ={DefaultLanguage}= as configured to this plu
 
 %META:FORM{name="PackageForm"}%
 %META:FIELD{name="Author" title="Author" value="Michael Daum"}%
-%META:FIELD{name="Copyright" title="Copyright" value="&copy; 2013-2016 Michael Daum http://michaeldaumconsulting.com"}%
+%META:FIELD{name="Version" title="Version" value="%25$VERSION%25"}%
+%META:FIELD{name="Release" title="Release" value="%25$RELEASE%25"}%
 %META:FIELD{name="Description" title="Description" value="%25$SHORTDESCRIPTION%25"}%
-%META:FIELD{name="Home" title="Home" value="Foswiki:Extensions/%TOPIC%"}%
+%META:FIELD{name="Repository" title="Repository" value="https://github.com/foswiki/%25TOPIC%25"}%
+%META:FIELD{name="Copyright" title="Copyright" value="&copy; 2013-2016 Michael Daum http://michaeldaumconsulting.com"}%
 %META:FIELD{name="License" title="License" value="[[http://www.gnu.org/licenses/gpl.html][GPL (Gnu General Public License)]]"}%
-%META:FIELD{name="Release" title="Release" value="%$RELEASE%"}%
-%META:FIELD{name="Repository" title="Repository" value="https://github.com/foswiki/%TOPIC%"}%
-%META:FIELD{name="Support" title="Support" value="Foswiki:Support/%TOPIC%"}%
-%META:FIELD{name="Version" title="Version" value="%$VERSION%"}%
+%META:FIELD{name="Home" title="Home" value="Foswiki:Extensions/%25TOPIC%25"}%
+%META:FIELD{name="Support" title="Support" value="Foswiki:Support/%25TOPIC%25"}%

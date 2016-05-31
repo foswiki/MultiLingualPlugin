@@ -21,8 +21,8 @@ use warnings;
 use Foswiki::Func ();
 use Foswiki::Plugins ();
 
-our $VERSION = '2.20';
-our $RELEASE = '08 Mar 2016';
+our $VERSION = '2.30';
+our $RELEASE = '31 May 2016';
 our $SHORTDESCRIPTION = 'Support for a multi lingual Foswiki';
 our $NO_PREFS_IN_TOPIC = 1;
 our $core;
