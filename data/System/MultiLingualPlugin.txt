@@ -62,7 +62,8 @@ switch to different content maintained somewhere else in your wiki:
 To separate the application of translated strings from their translation you might specify a lexicon, either
 
    * using the =lexicon= parameter to =%TRANSLATE= or
-   * using the =CONTENT_LEXICON= preference variable
+   * using the =CONTENT_LEXICON= preference variable or 
+   * using the <nop>WebLexicon topic in the current web
 
 The lexicon is a topic holding =%META:LEXICON= records as produced by the Foswiki:Extensions/MetaDataPlugin
 and specified in the [[LexiconForm]] shipped with this plugin.
@@ -203,6 +204,7 @@ in his/her browser or the value of ={DefaultLanguage}= as configured to this plu
 %$DEPENDENCIES%
 
 ---++ Change History
+|  02 Sep 2016 | added support for <nop>WebLexicon |
 |  31 May 2016 | added =arg&lt;N>= way of specifying arguments to =%TRANSLATE= |
 |   8 Mar 2016 | fixed error using latest Locale::Country |
 |  17 Jul 2015 | fixed detection of CONTENT_LEXICON and extraction of correct string for a given language |

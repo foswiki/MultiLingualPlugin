@@ -19,6 +19,7 @@ use strict;
 use warnings;
 
 use Foswiki::Func ();
+use Foswiki::Plugins ();
 use Locale::Language;
 use Locale::Country;
 use Error qw(:try);
@@ -32,8 +33,11 @@ sub writeDebug {
 
 sub new {
   my $class = shift;
+  my $session = shift || $Foswiki::Plugins::SESSION;
 
   my $this = bless({ @_ }, $class);
+
+  $this->{session} = $session;
 
   if (defined $Foswiki::cfg{MultiLingualPlugin}{Aliases} && !$doneAliases) {
     foreach my $key (keys %{$Foswiki::cfg{MultiLingualPlugin}{Aliases}}) {
@@ -105,7 +109,7 @@ sub preProcessMaketextParams {
 
       #print STDERR "method='$method'\n";
       throw Error::Simple("invalid method $method") 
-        unless $method =~ /^(_\*|_\-?\d+|\*|\#|quant|numf|sprintf)$/;
+        unless $method =~ /^(_\*|_\-?\d+|\*|\#|quant|numf|sprintf|numerate)$/;
     } 
 
     push @c, $chunk;
@@ -138,9 +142,7 @@ sub preProcessMaketextParams {
 }
 
 sub TRANSLATE {
-  my ($this, $session, $params, $theTopic, $theWeb) = @_;
-
-  my $request = Foswiki::Func::getRequestObject();
+  my ($this, $params, $theTopic, $theWeb) = @_;
 
   # param
   my $langCode = $params->{language};
@@ -158,7 +160,7 @@ sub TRANSLATE {
   } 
 
   # i18n
-  $langCode =  $session->i18n->language()
+  $langCode =  $this->{session}->i18n->language()
     if !defined($langCode) || $langCode eq '';
 
   $langCode = lc($langCode);
@@ -178,22 +180,26 @@ sub TRANSLATE {
   $lexiconTopics = Foswiki::Func::getPreferencesValue("CONTENT_LEXICON", $theWeb)
     if !defined($lexiconTopics) || $lexiconTopics eq '';
 
-  #print STDERR "translate $text, web=$theWeb, topic=$theTopic, lexiconTopics=".($lexiconTopics||'')."\n";
+  $lexiconTopics = 'WebLexicon'
+    if (!defined($lexiconTopics) || $lexiconTopics eq '')
+    && Foswiki::Func::topicExists($theWeb, 'WebLexicon');
 
   if (defined $lexiconTopics && $lexiconTopics ne "") {
     $lexiconTopics = Foswiki::Func::expandCommonVariables($lexiconTopics, $theTopic, $theWeb);
     my $lexiconWeb = $theWeb;
+    my $languageName = getLanguageOfCode($langCode);
     foreach my $lexiconTopic (split(/\s*,\s*/, $lexiconTopics)) {
       ($lexiconWeb, $lexiconTopic) = Foswiki::Func::normalizeWebTopicName($lexiconWeb, $lexiconTopic);
-      #print STDERR "... reading lexicon $lexiconWeb.$lexiconTopic\n";
       my $entry = $this->getLexiconEntry($lexiconWeb, $lexiconTopic, $text);
-      my $languageName = getLanguageOfCode($langCode);
       my $translation;
       if ($entry && $languageName) {
         my $key = fieldTitle2FieldName("$languageName ($langCode)");
         $translation = $entry->{$key} if defined $entry->{$key} && $entry->{$key} ne '';
       }
-      return $translation if defined $translation && $translation ne "";
+      if (defined $translation && $translation ne "") {
+        $text = $translation;
+        last;
+      }
     }
   }
     
@@ -215,7 +221,7 @@ sub TRANSLATE {
   my $error;
   try {
     $text = preProcessMaketextParams($text);
-    $text = $session->i18n->maketext($text, @args);
+    $text = $this->{session}->i18n->maketext($text, @args);
 
     # backwards compatibility
     $text =~ s/&&/\&/g;
@@ -234,7 +240,7 @@ sub TRANSLATE {
 
 # an improvement over the core LANGUAGES macro
 sub LANGUAGES {
-  my ($this, $session, $params, $theTopic, $theWeb) = @_;
+  my ($this, $params, $theTopic, $theWeb) = @_;
 
   my $languages = $params->{_DEFAULT};
   my $format = $params->{format};
@@ -253,7 +259,7 @@ sub LANGUAGES {
   my $include = $params->{include};
   my $exclude = $params->{exclude};
 
-  my $enabledLanguages = $session->i18n->enabled_languages();
+  my $enabledLanguages = $this->{session}->i18n->enabled_languages();
 
   my @records = ();
   if (defined $languages) {

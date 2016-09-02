@@ -21,15 +21,15 @@ use warnings;
 use Foswiki::Func ();
 use Foswiki::Plugins ();
 
-our $VERSION = '2.30';
-our $RELEASE = '31 May 2016';
+our $VERSION = '3.00';
+our $RELEASE = '02 Sep 2016';
 our $SHORTDESCRIPTION = 'Support for a multi lingual Foswiki';
 our $NO_PREFS_IN_TOPIC = 1;
 our $core;
 
 sub initPlugin {
 
-  Foswiki::Func::registerTagHandler('LANGUAGES', sub { return getCore()->LANGUAGES(@_); });
+  Foswiki::Func::registerTagHandler('LANGUAGES', sub { return getCore(shift)->LANGUAGES(@_); });
   Foswiki::Func::registerTagHandler('DEFAULTLANGUAGE', sub { 
     my $session = shift;
     if ($Foswiki::cfg{MultiLingualPlugin}{SyncUserInterface}) {
@@ -38,7 +38,7 @@ sub initPlugin {
       return $Foswiki::cfg{MultiLingualPlugin}{DefaultLanguage} || 'en'; 
     }
   });
-  Foswiki::Func::registerTagHandler('TRANSLATE', sub { return getCore()->TRANSLATE(@_); });
+  Foswiki::Func::registerTagHandler('TRANSLATE', sub { return getCore(shift)->TRANSLATE(@_); });
 
   return 1;
 }
@@ -80,10 +80,25 @@ sub getCore {
 
   unless (defined $core) {
     require Foswiki::Plugins::MultiLingualPlugin::Core;
-    $core = new Foswiki::Plugins::MultiLingualPlugin::Core();
+    $core = new Foswiki::Plugins::MultiLingualPlugin::Core(shift);
   }
 
   return $core;
+}
+
+sub translate {
+  my ($text, $web, $topic) = @_;
+
+  return "" unless defined $text && $text ne "";
+
+  my $params = {
+    _DEFAULT => $text,
+  };
+
+  $web ||= $Foswiki::Plugins::SESSION->{webName};
+  $topic ||= $Foswiki::Plugins::SESSION->{topicName};
+
+  return getCore()->TRANSLATE($params, $topic, $web);
 }
 
 1;
