@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
-# MultiLingualPlugin is Copyright (C) 2013-2016 Michael Daum http://michaeldaumconsulting.com
+# MultiLingualPlugin is Copyright (C) 2013-2017 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -21,8 +21,8 @@ use warnings;
 use Foswiki::Func ();
 use Foswiki::Plugins ();
 
-our $VERSION = '3.00';
-our $RELEASE = '02 Sep 2016';
+our $VERSION = '3.01';
+our $RELEASE = '16 Jan 2017';
 our $SHORTDESCRIPTION = 'Support for a multi lingual Foswiki';
 our $NO_PREFS_IN_TOPIC = 1;
 our $core;

@@ -204,6 +204,7 @@ in his/her browser or the value of ={DefaultLanguage}= as configured to this plu
 %$DEPENDENCIES%
 
 ---++ Change History
+|  16 Jan 2017 | fixed crash translating strings with certain bracket links |
 |  02 Sep 2016 | added support for <nop>WebLexicon |
 |  31 May 2016 | added =arg&lt;N>= way of specifying arguments to =%TRANSLATE= |
 |   8 Mar 2016 | fixed error using latest Locale::Country |
@@ -218,7 +219,7 @@ in his/her browser or the value of ={DefaultLanguage}= as configured to this plu
 %META:FIELD{name="Release" title="Release" value="%25$RELEASE%25"}%
 %META:FIELD{name="Description" title="Description" value="%25$SHORTDESCRIPTION%25"}%
 %META:FIELD{name="Repository" title="Repository" value="https://github.com/foswiki/%25TOPIC%25"}%
-%META:FIELD{name="Copyright" title="Copyright" value="&copy; 2013-2016 Michael Daum http://michaeldaumconsulting.com"}%
+%META:FIELD{name="Copyright" title="Copyright" value="&copy; 2013-2017 Michael Daum http://michaeldaumconsulting.com"}%
 %META:FIELD{name="License" title="License" value="[[http://www.gnu.org/licenses/gpl.html][GPL (Gnu General Public License)]]"}%
 %META:FIELD{name="Home" title="Home" value="Foswiki:Extensions/%25TOPIC%25"}%
 %META:FIELD{name="Support" title="Support" value="Foswiki:Support/%25TOPIC%25"}%

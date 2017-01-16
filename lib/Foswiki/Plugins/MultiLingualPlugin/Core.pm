@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
-# MultiLingualPlugin is Copyright (C) 2013-2016 Michael Daum http://michaeldaumconsulting.com
+# MultiLingualPlugin is Copyright (C) 2013-2017 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -94,15 +94,15 @@ sub preProcessMaketextParams {
   sub _checkChunk {
     my $chunk = shift;
 
-    writeDebug("chunk $chunk");
+    #writeDebug("chunk $chunk");
 
-    if ($chunk eq '[[' || $chunk eq ']]') {
+    if ($chunk eq '[[' || $chunk eq ']]' || $chunk eq '][') {
       $chunk =~ s/(\[|\])/~$1/g;
     } elsif ($chunk eq '[' || $chunk eq '') {       # "[" or end
-      return if $in_group; # let Locale::Maketext generate the proper error message
+      return $chunk if $in_group; # let Locale::Maketext generate the proper error message
       $in_group = 1;
     } elsif ($chunk eq ']') {  # "]"
-      return unless $in_group; # let Locale::Maketext generate the proper error message
+      return $chunk unless $in_group; # let Locale::Maketext generate the proper error message
 
       $in_group = 0;
       my ($method, @params) = split(/,/, $c[-1], -1);
@@ -117,11 +117,14 @@ sub preProcessMaketextParams {
     return $chunk;
   }
 
+
   $text =~ 
       s/(
           \[\[ # starting bracket link
           |
           \]\] # endint bracket link
+          |
+          \]\[ # middle part of a link
           |
           [^\~\[\]]+  # non-~[] stuff (Capture everything else here)
           |
