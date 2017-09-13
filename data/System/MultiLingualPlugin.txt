@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" comment="" date="1464687321" format="1.1" version="1"}%
+%META:TOPICINFO{author="ProjectContributor" comment="" date="1500461121" format="1.1"  version="1"}%
 ---+!! %TOPIC%
 %FORMFIELD{"Description"}%
 
@@ -168,7 +168,6 @@ This is recommended for any new Foswiki installation. See Foswiki:Extensions/Cha
 Render a full table of all known languages:
 
 %LANGUAGES{
-  "bg, zh-cn, zh-tw, cs, da, nl, en, fi, fr, de, it, ja, ko, no, pl, pt, pt-br, ru, es, sv, tr, uk"
   header="| *#* | *Language* | *Name* | *Code* | *Country* | *Flag* |$n"
   format="| $index | $language | $name | $code | $country | $icon(32) |"
   separator="$n"
@@ -204,6 +203,7 @@ in his/her browser or the value of ={DefaultLanguage}= as configured to this plu
 %$DEPENDENCIES%
 
 ---++ Change History
+|  13 Sep 2017 | better handling of enabled languages; added Greek flag to mapping; suppress Locale::Codes' error reporting to stderr | 
 |  16 Jan 2017 | fixed crash translating strings with certain bracket links |
 |  02 Sep 2016 | added support for <nop>WebLexicon |
 |  31 May 2016 | added =arg&lt;N>= way of specifying arguments to =%TRANSLATE= |

@@ -262,7 +262,8 @@ sub LANGUAGES {
   my $include = $params->{include};
   my $exclude = $params->{exclude};
 
-  my $enabledLanguages = $this->{session}->i18n->enabled_languages();
+  my $enabledLanguages = $this->enabledLanguages();
+  #print STDERR "enabled_languages=".join(", ", keys %$enabledLanguages)."\n";
 
   my @records = ();
   if (defined $languages) {
@@ -332,6 +333,33 @@ sub LANGUAGES {
   return $result;
 }
 
+sub enabledLanguages {
+  my ($this) = @_;
+
+  unless (defined $this->{enabledLanguages}) {
+
+    # temporarily disable error messages in stderr
+    $Locale::Country::obj->show_errors(0) if defined $Locale::Country::obj;
+
+    my $enabledLanguages = $this->{session}->i18n->enabled_languages();
+    $this->{enabledLanguages} = {};
+
+    # weed out those not known to Locale::Codes
+    foreach my $code (keys %{$enabledLanguages}) {
+      if (getLanguageOfCode($code)) {
+        $this->{enabledLanguages}{$code} = $enabledLanguages->{$code};
+      } else {
+        #print STDERR "WARNING: $code unkown to Locale::Country\n";
+      }
+    }
+
+    # enable it again
+    $Locale::Country::obj->show_errors(1) if defined $Locale::Country::obj;
+  }
+
+  return $this->{enabledLanguages};
+}
+
 sub getFlagImage {
   my ($this, $code, $size) = @_;
 
@@ -379,7 +407,7 @@ sub getCountryOfCode {
     $code = $1;  
   }
 
-  return code2country($code, LOCALE_CODE_ALPHA_2) || '';
+  return code2country($code, LOCALE_CODE_ALPHA_2, 1) || '';
 }
 
 sub getLanguageOfCode {
@@ -389,7 +417,9 @@ sub getLanguageOfCode {
     $code = $1;  
   }
 
-  return code2language($code, LOCALE_CODE_ALPHA_2) || '';
+  my $lang = code2language($code, LOCALE_CODE_ALPHA_2, 1) || '';
+  $lang =~ s/\(\d+\-\)//; # weed out Modern Greek (1453-)
+  return $lang;
 }
 
 sub getLabelOfCode {
@@ -398,7 +428,7 @@ sub getLabelOfCode {
   my $label;
   if ($code =~ /^(\w+)-(\w+)$/) {
     $code = $1;
-    my ($lname, $cname) = ((code2language($1, LOCALE_CODE_ALPHA_2) || ''), (code2country($2, LOCALE_CODE_ALPHA_2) || ''));
+    my ($lname, $cname) = ((code2language($1, LOCALE_CODE_ALPHA_2, 1) || ''), (code2country($2, LOCALE_CODE_ALPHA_2, 1) || ''));
     if ($lname && $cname) {
       $label = "$lname ($cname)";
     } elsif ($lname) {
@@ -409,7 +439,8 @@ sub getLabelOfCode {
       $label = "$code";
     }
   } else {
-    $label = code2language($code, LOCALE_CODE_ALPHA_2) || "$code";
+    $label = code2language($code, LOCALE_CODE_ALPHA_2, 1) || "$code";
+    $label =~ s/\(\d+\-\)//; # weed out Modern Greek (1453-)
   }
 
   return $label;

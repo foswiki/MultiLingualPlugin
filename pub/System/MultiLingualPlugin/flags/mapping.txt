@@ -6,6 +6,7 @@ cs = Czech-Republic.png
 da = Denmark.png
 de = Germany.png
 es = Spain.png
+el = Greece.png
 fi = Finland.png
 fr = France.png
 gb = United-Kingdom-Great-Britain.png
