@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" comment="" date="1500461121" format="1.1"  version="1"}%
+%META:TOPICINFO{author="ProjectContributor" comment="" date="1515758221" format="1.1"  version="1"}%
 ---+!! %TOPIC%
 %FORMFIELD{"Description"}%
 
@@ -62,10 +62,16 @@ switch to different content maintained somewhere else in your wiki:
 To separate the application of translated strings from their translation you might specify a lexicon, either
 
    * using the =lexicon= parameter to =%TRANSLATE= or
-   * using the =CONTENT_LEXICON= preference variable or 
+   * using the =WEBLEXICON= preference variable or 
    * using the <nop>WebLexicon topic in the current web
 
-The lexicon is a topic holding =%META:LEXICON= records as produced by the Foswiki:Extensions/MetaDataPlugin
+Multiple lexicons can be specified in the =WEBLEXICON= preference variable separated by commas. Entries
+are looked up in the lexicons with the given precedence, that is an entry is returned as found in the first lexicon on the list.
+
+A <nop>WebLexicon topic in the current web will allways take highest precedence over all other lexicons listed in =WEBLEXICON=. 
+It is not required to list it explicitly in the =WEBLEXICON= prefernce.
+
+Each lexicon is a topic holding =%META:LEXICON= records as produced by the Foswiki:Extensions/MetaDataPlugin
 and specified in the [[LexiconForm]] shipped with this plugin.
 
 ---++ Syntax
@@ -203,6 +209,7 @@ in his/her browser or the value of ={DefaultLanguage}= as configured to this plu
 %$DEPENDENCIES%
 
 ---++ Change History
+|  12 Jan 2018 | don't require a local <nop>WebLexicon to be registered |
 |  13 Sep 2017 | better handling of enabled languages; added Greek flag to mapping; suppress Locale::Codes' error reporting to stderr | 
 |  16 Jan 2017 | fixed crash translating strings with certain bracket links |
 |  02 Sep 2016 | added support for <nop>WebLexicon |
@@ -219,7 +226,7 @@ in his/her browser or the value of ={DefaultLanguage}= as configured to this plu
 %META:FIELD{name="Release" title="Release" value="%25$RELEASE%25"}%
 %META:FIELD{name="Description" title="Description" value="%25$SHORTDESCRIPTION%25"}%
 %META:FIELD{name="Repository" title="Repository" value="https://github.com/foswiki/%25TOPIC%25"}%
-%META:FIELD{name="Copyright" title="Copyright" value="&copy; 2013-2017 Michael Daum http://michaeldaumconsulting.com"}%
+%META:FIELD{name="Copyright" title="Copyright" value="&copy; 2013-2018 Michael Daum http://michaeldaumconsulting.com"}%
 %META:FIELD{name="License" title="License" value="[[http://www.gnu.org/licenses/gpl.html][GPL (Gnu General Public License)]]"}%
 %META:FIELD{name="Home" title="Home" value="Foswiki:Extensions/%25TOPIC%25"}%
 %META:FIELD{name="Support" title="Support" value="Foswiki:Support/%25TOPIC%25"}%

@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
-# MultiLingualPlugin is Copyright (C) 2013-2017 Michael Daum http://michaeldaumconsulting.com
+# MultiLingualPlugin is Copyright (C) 2013-2018 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -179,19 +179,22 @@ sub TRANSLATE {
 
   $theWeb = $params->{web} if defined $params->{web};
 
-  my $lexiconTopics = $params->{lexicon};
-  $lexiconTopics = Foswiki::Func::getPreferencesValue("CONTENT_LEXICON", $theWeb)
-    if !defined($lexiconTopics) || $lexiconTopics eq '';
+  my $lexiconTopics = $params->{lexicon} || '';
+  
+  $lexiconTopics = Foswiki::Func::getPreferencesValue("WEBLEXICON", $theWeb) 
+    || Foswiki::Func::getPreferencesValue("CONTENT_LEXICON", $theWeb) 
+    || ''
+    if $lexiconTopics eq '';
 
-  $lexiconTopics = 'WebLexicon'
-    if (!defined($lexiconTopics) || $lexiconTopics eq '')
-    && Foswiki::Func::topicExists($theWeb, 'WebLexicon');
+  # add local lexicon if it exists
+  $lexiconTopics = 'WebLexicon, '.$lexiconTopics if Foswiki::Func::topicExists($theWeb, 'WebLexicon');
 
-  if (defined $lexiconTopics && $lexiconTopics ne "") {
+  if ($lexiconTopics ne '') {
     $lexiconTopics = Foswiki::Func::expandCommonVariables($lexiconTopics, $theTopic, $theWeb);
     my $lexiconWeb = $theWeb;
     my $languageName = getLanguageOfCode($langCode);
     foreach my $lexiconTopic (split(/\s*,\s*/, $lexiconTopics)) {
+      next if $lexiconTopic eq "";
       ($lexiconWeb, $lexiconTopic) = Foswiki::Func::normalizeWebTopicName($lexiconWeb, $lexiconTopic);
       my $entry = $this->getLexiconEntry($lexiconWeb, $lexiconTopic, $text);
       my $translation;
