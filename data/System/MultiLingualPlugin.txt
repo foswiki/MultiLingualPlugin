@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" comment="" date="1515758221" format="1.1"  version="1"}%
+%META:TOPICINFO{author="ProjectContributor" comment="" date="1531750625" format="1.1"  version="1"}%
 ---+!! %TOPIC%
 %FORMFIELD{"Description"}%
 
@@ -61,9 +61,10 @@ switch to different content maintained somewhere else in your wiki:
 
 To separate the application of translated strings from their translation you might specify a lexicon, either
 
-   * using the =lexicon= parameter to =%TRANSLATE= or
+   * using the =lexicon= parameter of the =%TRANSLATE= makro or
+   * using the <nop>WebLexicon topic in the current web or
    * using the =WEBLEXICON= preference variable or 
-   * using the <nop>WebLexicon topic in the current web
+   * using the =SITELEXICON= preference variable
 
 Multiple lexicons can be specified in the =WEBLEXICON= preference variable separated by commas. Entries
 are looked up in the lexicons with the given precedence, that is an entry is returned as found in the first lexicon on the list.
@@ -209,13 +210,14 @@ in his/her browser or the value of ={DefaultLanguage}= as configured to this plu
 %$DEPENDENCIES%
 
 ---++ Change History
+|  16 Jul 2018 | don't use retired language codes, us aliases instead; sync user interface by default; a few performance fixes; added =SITELEXICON= preference setting |
 |  12 Jan 2018 | don't require a local <nop>WebLexicon to be registered |
 |  13 Sep 2017 | better handling of enabled languages; added Greek flag to mapping; suppress Locale::Codes' error reporting to stderr | 
 |  16 Jan 2017 | fixed crash translating strings with certain bracket links |
 |  02 Sep 2016 | added support for <nop>WebLexicon |
 |  31 May 2016 | added =arg&lt;N>= way of specifying arguments to =%TRANSLATE= |
 |   8 Mar 2016 | fixed error using latest Locale::Country |
-|  17 Jul 2015 | fixed detection of CONTENT_LEXICON and extraction of correct string for a given language |
+|  17 Jul 2015 | fixed detection of =WEBLEXICON= and extraction of correct string for a given language |
 |  16 Dec 2014 | added =$label_name= and =$language_name= to ease select boxes |
 |   1 Nov 2013 | initial release |
 

@@ -158,7 +158,7 @@ sub TRANSLATE {
     if ($langCode eq 'detect') {
       $langCode = '';
     } else {
-      $langCode = Foswiki::Func::expandCommonVariables($langCode);
+      #$langCode = Foswiki::Func::expandCommonVariables($langCode); DISABLED for performance reasons
     }
   } 
 
@@ -171,31 +171,42 @@ sub TRANSLATE {
   my $key = $langCode;
   $key =~ s/-/_/g; # to be able to specify a tai translation using zh_tw="..." as a parameter
 
+  # get text 
   my $text = $params->{$key};
+
+  # shortcut for simple inline translations
+  if (defined $text && $text !~ /\[_\d+\]/) { # shortcut for simple inline translations
+    writeDebug("shortcut result $text");
+    return $text;
+  }
+
   $text = $params->{_DEFAULT} unless defined $text; 
   $text = '' unless defined $text;
 
   return '' if $text eq '';
 
-  $theWeb = $params->{web} if defined $params->{web};
+  my $lexiconWeb = $params->{web} || $theWeb;
+  my @lexiconTopics = ();
+  push @lexiconTopics, $params->{lexicon} if $params->{lexicon};
 
-  my $lexiconTopics = $params->{lexicon} || '';
-  
-  $lexiconTopics = Foswiki::Func::getPreferencesValue("WEBLEXICON", $theWeb) 
-    || Foswiki::Func::getPreferencesValue("CONTENT_LEXICON", $theWeb) 
-    || ''
-    if $lexiconTopics eq '';
+  unless (@lexiconTopics) {
+    # add existing web lexicon in this web
+    push @lexiconTopics, 'WebLexicon' if Foswiki::Func::topicExists($lexiconWeb, 'WebLexicon');
 
-  # add local lexicon if it exists
-  $lexiconTopics = 'WebLexicon, '.$lexiconTopics if Foswiki::Func::topicExists($theWeb, 'WebLexicon');
+    # add web lexicon preferences
+    my $webLexicon = Foswiki::Func::getPreferencesValue("WEBLEXICON", $lexiconWeb) 
+      || Foswiki::Func::getPreferencesValue("CONTENT_LEXICON", $lexiconWeb);
+    push @lexiconTopics, split(/\s*,\s*/, $webLexicon) if $webLexicon;
 
-  if ($lexiconTopics ne '') {
-    $lexiconTopics = Foswiki::Func::expandCommonVariables($lexiconTopics, $theTopic, $theWeb);
-    my $lexiconWeb = $theWeb;
+    # add site lexicon fallback
+    my $siteLexicon = Foswiki::Func::getPreferencesValue("SITELEXICON") || '';
+    push @lexiconTopics, split(/\s*,\s*/, $siteLexicon) if $siteLexicon;
+  }
+
+  if (@lexiconTopics) {
     my $languageName = getLanguageOfCode($langCode);
-    foreach my $lexiconTopic (split(/\s*,\s*/, $lexiconTopics)) {
+    foreach my $lexiconTopic (@lexiconTopics) {
       next if $lexiconTopic eq "";
-      ($lexiconWeb, $lexiconTopic) = Foswiki::Func::normalizeWebTopicName($lexiconWeb, $lexiconTopic);
       my $entry = $this->getLexiconEntry($lexiconWeb, $lexiconTopic, $text);
       my $translation;
       if ($entry && $languageName) {
@@ -203,7 +214,11 @@ sub TRANSLATE {
         $translation = $entry->{$key} if defined $entry->{$key} && $entry->{$key} ne '';
       }
       if (defined $translation && $translation ne "") {
-        $text = $translation;
+        if ($translation eq $text) {
+          $text .= "\0"; # prevent translation loops
+        } else {
+          $text = $translation;
+        }
         last;
       }
     }
@@ -240,6 +255,8 @@ sub TRANSLATE {
   if (defined $error) {
     return "<span class='foswikiAlert'><noautolink><literal>$error</literal></noautolink></span>";
   }
+
+  $text =~ s/\0//g; # remove translation token
 
   return Foswiki::Func::decodeFormatTokens($text);
 }
@@ -352,7 +369,7 @@ sub enabledLanguages {
       if (getLanguageOfCode($code)) {
         $this->{enabledLanguages}{$code} = $enabledLanguages->{$code};
       } else {
-        #print STDERR "WARNING: $code unkown to Locale::Country\n";
+        print STDERR "WARNING: $code unkown to Locale::Country\n" unless $code eq 'tlh'; # warn for unknown codes except klingon
       }
     }
 
@@ -410,7 +427,7 @@ sub getCountryOfCode {
     $code = $1;  
   }
 
-  return code2country($code, LOCALE_CODE_ALPHA_2, 1) || '';
+  return code2country($code, LOCALE_CODE_ALPHA_2) || '';
 }
 
 sub getLanguageOfCode {
@@ -420,7 +437,7 @@ sub getLanguageOfCode {
     $code = $1;  
   }
 
-  my $lang = code2language($code, LOCALE_CODE_ALPHA_2, 1) || '';
+  my $lang = code2language($code, LOCALE_CODE_ALPHA_2) || '';
   $lang =~ s/\(\d+\-\)//; # weed out Modern Greek (1453-)
   return $lang;
 }
@@ -431,7 +448,7 @@ sub getLabelOfCode {
   my $label;
   if ($code =~ /^(\w+)-(\w+)$/) {
     $code = $1;
-    my ($lname, $cname) = ((code2language($1, LOCALE_CODE_ALPHA_2, 1) || ''), (code2country($2, LOCALE_CODE_ALPHA_2, 1) || ''));
+    my ($lname, $cname) = ((code2language($1, LOCALE_CODE_ALPHA_2) || ''), (code2country($2, LOCALE_CODE_ALPHA_2) || ''));
     if ($lname && $cname) {
       $label = "$lname ($cname)";
     } elsif ($lname) {
@@ -442,7 +459,7 @@ sub getLabelOfCode {
       $label = "$code";
     }
   } else {
-    $label = code2language($code, LOCALE_CODE_ALPHA_2, 1) || "$code";
+    $label = code2language($code, LOCALE_CODE_ALPHA_2) || "$code";
     $label =~ s/\(\d+\-\)//; # weed out Modern Greek (1453-)
   }
 
@@ -452,10 +469,15 @@ sub getLabelOfCode {
 sub getLexiconEntry {
   my ($this, $web, $topic, $text) = @_;
 
-  my $lexicon = $this->{lexicons}{$web.'.'.$topic};
+  my ($lexiconWeb, $lexiconTopic) = Foswiki::Func::normalizeWebTopicName($web, $topic);
+  $lexiconWeb =~ s/\//./g;
+
+  my $key = $lexiconWeb.'.'.$lexiconTopic;
+
+  my $lexicon = $this->{lexicons}{$key};
   unless (defined $lexicon) {
     $lexicon = {};
-    writeDebug("reading lexicon from $web.$topic");
+    writeDebug("reading lexicon from $key");
 
     my ($meta) = Foswiki::Func::readTopic($web, $topic);
     foreach my $entry  ($meta->find("LEXICON")) {
@@ -463,7 +485,7 @@ sub getLexiconEntry {
       $lexicon->{$entry->{String}} = $entry;
     }
 
-    $this->{lexicons}{$web.'.'.$topic} = $lexicon;
+    $this->{lexicons}{$key} = $lexicon;
   }
 
   return $lexicon->{$text};
