@@ -210,6 +210,7 @@ in his/her browser or the value of ={DefaultLanguage}= as configured to this plu
 %$DEPENDENCIES%
 
 ---++ Change History
+|  17 Jan 2024 | improved reading web lexicon |
 |  16 Jul 2018 | don't use retired language codes, us aliases instead; sync user interface by default; a few performance fixes; added =SITELEXICON= preference setting |
 |  12 Jan 2018 | don't require a local <nop>WebLexicon to be registered |
 |  13 Sep 2017 | better handling of enabled languages; added Greek flag to mapping; suppress Locale::Codes' error reporting to stderr | 
@@ -228,7 +229,7 @@ in his/her browser or the value of ={DefaultLanguage}= as configured to this plu
 %META:FIELD{name="Release" title="Release" value="%25$RELEASE%25"}%
 %META:FIELD{name="Description" title="Description" value="%25$SHORTDESCRIPTION%25"}%
 %META:FIELD{name="Repository" title="Repository" value="https://github.com/foswiki/%25TOPIC%25"}%
-%META:FIELD{name="Copyright" title="Copyright" value="&copy; 2013-2018 Michael Daum http://michaeldaumconsulting.com"}%
+%META:FIELD{name="Copyright" title="Copyright" value="&copy; 2013-2024 Michael Daum"}%
 %META:FIELD{name="License" title="License" value="[[http://www.gnu.org/licenses/gpl.html][GPL (Gnu General Public License)]]"}%
 %META:FIELD{name="Home" title="Home" value="Foswiki:Extensions/%25TOPIC%25"}%
 %META:FIELD{name="Support" title="Support" value="Foswiki:Support/%25TOPIC%25"}%

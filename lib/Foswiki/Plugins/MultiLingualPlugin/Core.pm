@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
-# MultiLingualPlugin is Copyright (C) 2013-2018 Michael Daum http://michaeldaumconsulting.com
+# MultiLingualPlugin is Copyright (C) 2013-2024 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -52,6 +52,12 @@ sub new {
   return $this;
 }
 
+sub DESTROY {
+  my $this = shift;
+
+  undef $this->{_lexiconTopics};
+}
+
 sub readIconMapping {
   my $this = shift;
 
@@ -60,7 +66,7 @@ sub readIconMapping {
   my $IN_FILE;
   open( $IN_FILE, '<', $mappingFile ) || return '';
 
-  foreach my $line (<$IN_FILE>) {
+  while (my $line = <$IN_FILE>) {
     $line =~ s/#.*$//;
     $line =~ s/^\s+//;
     $line =~ s/\s+$//;
@@ -89,12 +95,10 @@ sub preProcessMaketextParams {
 
   # from Locale::Maketext
   our $in_group = 0;
-  our @c;
+  our @c = ();
 
-  sub _checkChunk {
+  sub _checkChunk { ## no critic
     my $chunk = shift;
-
-    #writeDebug("chunk $chunk");
 
     if ($chunk eq '[[' || $chunk eq ']]' || $chunk eq '][') {
       $chunk =~ s/(\[|\])/~$1/g;
@@ -107,9 +111,9 @@ sub preProcessMaketextParams {
       $in_group = 0;
       my ($method, @params) = split(/,/, $c[-1], -1);
 
-      #print STDERR "method='$method'\n";
-      throw Error::Simple("invalid method $method") 
-        unless $method =~ /^(_\*|_\-?\d+|\*|\#|quant|numf|sprintf|numerate)$/;
+      unless ($method =~ /^(_\*|_\-?\d+|\*|\#|quant|numf|sprintf|numerate)$/) {
+        throw Error::Simple("invalid method $method") 
+      }
     } 
 
     push @c, $chunk;
@@ -117,9 +121,10 @@ sub preProcessMaketextParams {
     return $chunk;
   }
 
-
   $text =~ 
       s/(
+          \[_\d\] # placeholder
+          |
           \[\[ # starting bracket link
           |
           \]\] # endint bracket link
@@ -145,7 +150,11 @@ sub preProcessMaketextParams {
 }
 
 sub TRANSLATE {
-  my ($this, $params, $theTopic, $theWeb) = @_;
+  my ($this, $params, $topic, $web) = @_;
+
+  my $i18n = $this->{session}->i18n;
+
+  my $doWarn = Foswiki::Func::isTrue($params->{warn}, 0);
 
   # param
   my $langCode = $params->{language};
@@ -163,7 +172,7 @@ sub TRANSLATE {
   } 
 
   # i18n
-  $langCode =  $this->{session}->i18n->language()
+  $langCode =  $i18n->language()
     if !defined($langCode) || $langCode eq '';
 
   $langCode = lc($langCode);
@@ -175,90 +184,116 @@ sub TRANSLATE {
   my $text = $params->{$key};
 
   # shortcut for simple inline translations
-  if (defined $text && $text !~ /\[_\d+\]/) { # shortcut for simple inline translations
+  if (defined $text && $text !~ /\[(_\*|_\-?\d+|\*|\#|quant|numf|sprintf|numerate)/) { 
     writeDebug("shortcut result $text");
-    return $text;
+    return Foswiki::Func::decodeFormatTokens($text);
   }
 
   $text = $params->{_DEFAULT} unless defined $text; 
   $text = '' unless defined $text;
+  $text =~ s/^_+//g; # maketext args can't start with an underscore
 
   return '' if $text eq '';
 
-  my $lexiconWeb = $params->{web} || $theWeb;
+  my $lexiconWeb = $params->{web} || $this->{session}{webName}; # NOTE: use base web, not current web
   my @lexiconTopics = ();
-  push @lexiconTopics, $params->{lexicon} if $params->{lexicon};
+  push @lexiconTopics, [Foswiki::Func::normalizeWebTopicName($lexiconWeb, $params->{lexicon})] if $params->{lexicon};
+  @lexiconTopics = $this->getLexiconTopics($lexiconWeb, $topic) unless @lexiconTopics;
 
-  unless (@lexiconTopics) {
-    # add existing web lexicon in this web
-    push @lexiconTopics, 'WebLexicon' if Foswiki::Func::topicExists($lexiconWeb, 'WebLexicon');
-
-    # add web lexicon preferences
-    my $webLexicon = Foswiki::Func::getPreferencesValue("WEBLEXICON", $lexiconWeb) 
-      || Foswiki::Func::getPreferencesValue("CONTENT_LEXICON", $lexiconWeb);
-    push @lexiconTopics, split(/\s*,\s*/, $webLexicon) if $webLexicon;
-
-    # add site lexicon fallback
-    my $siteLexicon = Foswiki::Func::getPreferencesValue("SITELEXICON") || '';
-    push @lexiconTopics, split(/\s*,\s*/, $siteLexicon) if $siteLexicon;
-  }
-
+  my $found = 0;
   if (@lexiconTopics) {
     my $languageName = getLanguageOfCode($langCode);
     foreach my $lexiconTopic (@lexiconTopics) {
-      next if $lexiconTopic eq "";
-      my $entry = $this->getLexiconEntry($lexiconWeb, $lexiconTopic, $text);
+      next unless $lexiconTopic;
+      my $entry = $this->getLexiconEntry($lexiconTopic, $text);
       my $translation;
       if ($entry && $languageName) {
         my $key = fieldTitle2FieldName("$languageName ($langCode)");
         $translation = $entry->{$key} if defined $entry->{$key} && $entry->{$key} ne '';
       }
       if (defined $translation && $translation ne "") {
-        if ($translation eq $text) {
-          $text .= "\0"; # prevent translation loops
-        } else {
-          $text = $translation;
-        }
+        $text = $translation . "\0"; # prevent translation loops
+        $found = 1;
         last;
       }
     }
   }
-    
-  my $args = $params->{args};
-  $args = '' unless defined $args;
 
-  my $split = $params->{splitargs} || '\s*,\s*';
-  my @args = split($split, $args);
+  if (!$found || $text =~ /\[|\]/) {
 
-  # gather enumerated args arg1, arg2, ...
-  foreach my $key (keys %$params) {
-    if ($key =~ /^arg(\d+)$/) {
-      $args[$1] = $params->{$key};
+    my $args = $params->{args};
+    $args = '' unless defined $args;
+
+    my $split = $params->{splitargs} || '\s*,\s*';
+    my @args = split($split, $args);
+
+    # gather enumerated args arg1, arg2, ...
+    foreach my $key (keys %$params) {
+      if ($key =~ /^arg(\d+)$/) {
+        $args[$1-1] = $params->{$key};
+      }
     }
-  }
 
-  push @args, '' for (0...100); # fill up args in case there are more placeholders in text
+    push @args, '' for (0...100); # fill up args in case there are more placeholders in text
 
-  my $error;
-  try {
-    $text = preProcessMaketextParams($text);
-    $text = $this->{session}->i18n->maketext($text, @args);
+    my $error;
+    try {
+      $text = preProcessMaketextParams($text);
+      $text = $i18n->maketext($text, @args);
 
-    # backwards compatibility
-    $text =~ s/&&/\&/g;
+      # backwards compatibility
+      $text =~ s/&&/\&/g;
 
-  } catch Error::Simple with {
-    $error = shift;
-    $error =~ s/ (via|at) .*$//s;
-  };
+    } catch Error::Simple with {
+      $error = shift;
+      $error =~ s/ (via|at) .*$//s;
+    };
 
-  if (defined $error) {
-    return "<span class='foswikiAlert'><noautolink><literal>$error</literal></noautolink></span>";
+    return $error if defined $error && $doWarn;
+  } else {
+    #print STDERR "simple string $text\n";
   }
 
   $text =~ s/\0//g; # remove translation token
 
   return Foswiki::Func::decodeFormatTokens($text);
+}
+
+sub getLexiconTopics {
+  my ($this, $web, $topic) = @_;
+
+  $web =~ s/\//./g;
+  my $key = "$web.$topic";
+
+
+  unless (defined $this->{_lexiconTopics}{$key}) {
+    my @lexiconTopics = ();
+
+    # add existing web lexicon in this web
+    push @lexiconTopics, 'WebLexicon' if Foswiki::Func::topicExists($web, 'WebLexicon');
+
+    # add web lexicon preferences
+    my $webLexicon = Foswiki::Func::getPreferencesValue("WEBLEXICON", $web) 
+      || Foswiki::Func::getPreferencesValue("CONTENT_LEXICON", $web);
+    push @lexiconTopics, split(/\s*,\s*/, $webLexicon) if $webLexicon;
+
+    # add site lexicon fallback
+    my $siteLexicon = Foswiki::Func::getPreferencesValue("SITELEXICON") || '';
+    push @lexiconTopics, split(/\s*,\s*/, $siteLexicon) if $siteLexicon;
+
+    #print STDERR "lexiconTopics($web.$topic): ".join(", ", @lexiconTopics)."\n";
+
+    foreach (@lexiconTopics) {
+      my ($lexiconWeb, $lexiconTopic) = Foswiki::Func::normalizeWebTopicName($web, $_);
+      $lexiconWeb =~ s/\//./g;
+      push @{$this->{_lexiconTopics}{$key}}, [$lexiconWeb, $lexiconTopic];
+    }
+
+  } else {
+    #print STDERR "found lexionTopics($web.$topic) in cache\n";
+  }
+
+  return @{$this->{_lexiconTopics}{$key} // []};
 }
 
 # an improvement over the core LANGUAGES macro
@@ -310,8 +345,8 @@ sub LANGUAGES {
   }
 
   my $theSort = $params->{sort} || 'language';
+  $theSort = 'code' if $theSort eq 'on';
   if ($theSort ne 'off') {
-    $theSort = 'code' if $theSort eq 'on';
     @records = sort {($a->{$theSort}||'') cmp ($b->{$theSort}||'')} @records;
   }
 
@@ -467,19 +502,16 @@ sub getLabelOfCode {
 }
 
 sub getLexiconEntry {
-  my ($this, $web, $topic, $text) = @_;
+  my ($this, $lexiconTopic, $text) = @_;
 
-  my ($lexiconWeb, $lexiconTopic) = Foswiki::Func::normalizeWebTopicName($web, $topic);
-  $lexiconWeb =~ s/\//./g;
-
-  my $key = $lexiconWeb.'.'.$lexiconTopic;
+  my $key = join(".", @$lexiconTopic);
 
   my $lexicon = $this->{lexicons}{$key};
   unless (defined $lexicon) {
     $lexicon = {};
     writeDebug("reading lexicon from $key");
 
-    my ($meta) = Foswiki::Func::readTopic($web, $topic);
+    my ($meta) = Foswiki::Func::readTopic($lexiconTopic->[0], $lexiconTopic->[1]);
     foreach my $entry  ($meta->find("LEXICON")) {
       next unless $entry->{String};
       $lexicon->{$entry->{String}} = $entry;
