@@ -21,7 +21,7 @@ use warnings;
 use Foswiki::Func ();
 use Foswiki::Plugins ();
 
-our $VERSION = '4.11';
+our $VERSION = '4.12';
 our $RELEASE = '%$RELEASE%';
 our $SHORTDESCRIPTION = 'Support for a multi lingual Foswiki';
 our $LICENSECODE = '%$LICENSECODE%';
@@ -48,6 +48,7 @@ sub initPlugin {
 }
 
 sub finishPlugin {
+  $core->finish() if defined $core;
   undef $core;
 }
 

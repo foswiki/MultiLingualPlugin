@@ -52,7 +52,7 @@ sub new {
   return $this;
 }
 
-sub DESTROY {
+sub finish {
   my $this = shift;
 
   undef $this->{_lexiconTopics};

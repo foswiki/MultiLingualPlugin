@@ -210,6 +210,7 @@ in his/her browser or the value of ={DefaultLanguage}= as configured to this plu
 %$DEPENDENCIES%
 
 ---++ Change History
+|  30 Apr 2024 | added more language flags |
 |  17 Jan 2024 | improved reading web lexicon |
 |  16 Jul 2018 | don't use retired language codes, us aliases instead; sync user interface by default; a few performance fixes; added =SITELEXICON= preference setting |
 |  12 Jan 2018 | don't require a local <nop>WebLexicon to be registered |

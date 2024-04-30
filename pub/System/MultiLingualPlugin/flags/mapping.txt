@@ -1,7 +1,10 @@
 sizes = 16, 24, 32, 48, 64, 128
 
 # covered by foswiki userinterface internationalization
+at = Austria.png
+au = Australia.png
 bg = Bulgaria.png
+ca = Canada.png
 cs = Czech-Republic.png
 da = Denmark.png
 de = Germany.png
@@ -11,6 +14,7 @@ fi = Finland.png
 fr = France.png
 gb = United-Kingdom-Great-Britain.png
 it = Italy.png
+in = India.png
 ja = Japan.png
 ko = South-Korea.png
 nl = Netherlands.png
@@ -21,8 +25,10 @@ pt = Portugal.png
 ru = Russian-Federation.png
 sv = Sweden.png
 tr = Turkey.png
-uk = Ukraine.png
+ua = Ukraine.png
 us = United-States-of-America.png
+cn = China.png
+za = South-Africa.png
 zh-cn = China.png
 zh-tw = Taiwan.png
 
@@ -43,7 +49,6 @@ zh-tw = Taiwan.png
 # Armenia.png
 # Aruba.png
 # ASEAN.png
-# Australia.png
 # Austria.png
 # Azerbaijan.png
 # Bahamas.png
@@ -67,7 +72,6 @@ zh-tw = Taiwan.png
 # Burundi.png
 # Cambodja.png
 # Cameroon.png
-# Canada.png
 # Cape-Verde.png
 # CARICOM.png
 # Catalonia.png
@@ -132,7 +136,6 @@ zh-tw = Taiwan.png
 # IAEA.png
 # Iceland.png
 # IHO.png
-# India.png
 # Indonesia.png
 # Iran.png
 # Iraq.png
