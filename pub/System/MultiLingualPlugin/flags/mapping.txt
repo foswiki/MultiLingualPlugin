@@ -1,291 +1,312 @@
 sizes = 16, 24, 32, 48, 64, 128
 
-# covered by foswiki userinterface internationalization
+ad = Andorra.png
+ae = United-Arab-Emirates.png
+af = Afghanistan.png
+ag = Antigua-Barbuda.png
+ai = Anguilla.png
+al = Albania.png
+am = Armenia.png
+ao = Angola.png
+aq = Antarctica.png
+ar = Argentina.png
+as = American-Samoa.png
 at = Austria.png
 au = Australia.png
+aw = Aruba.png
+ax = Aland.png
+az = Azerbaijan.png
+ba = Bosnia-Herzegovina.png
+bb = Barbados.png
+bd = Bangladesh.png
+be = Belgium.png
+bf = Burkina-Faso.png
 bg = Bulgaria.png
+bh = Bahrain.png
+bi = Burundi.png
+bj = Benin.png
+bl = Saint-Barthélemy.png
+bm = Bermuda.png
+bn = Brunei.png
+bo = Bolivia.png
+#bq = Bonaire,-Sint-Eustatius-and-Saba.png
+br = Brazil.png
+bs = Bahamas.png
+bt = Bhutan.png
+bv = Bouvet.png
+bw = Botswana.png
+by = Belarus.png
+bz = Belize.png
 ca = Canada.png
+cc = Cocos-Keeling.png
+cd = Congo-Democratic-Republic.png
+cf = Central-African-Republic.png
+cg = Congo.png
+ch = Switzerland.png
+ci = Côte-d'Ivoire.png
+ck = Cook-Islands.png
+cl = Chile.png
+cm = Cameroon.png
+cn = China.png
+co = Colombia.png
+cr = Costa-Rica.png
 cs = Czech-Republic.png
+cu = Cuba.png
+cv = Cabo-Verde.png
+cw = Curaçao.png
+cx = Christmas.png
+cy = Northern-Cyprus.png
+cz = Czechia.png
 da = Denmark.png
 de = Germany.png
-es = Spain.png
+dj = Djibouti.png
+dk = Denmark.png
+dm = Dominica.png
+do = Dominican-Republic.png
+dz = Algeria.png
+ec = Ecuador.png
+ee = Estonia.png
+eg = Egypt.png
+eh = Western-Sahara.png
 el = Greece.png
+er = Eritrea.png
+es = Spain.png
+et = Ethiopia.png
 fi = Finland.png
+fj = Fiji.png
+fk = Falkland-Malvinas.png
+fm = Micronesia.png
+fo = Faroe-Islands.png
 fr = France.png
+ga = Gabon.png
 gb = United-Kingdom-Great-Britain.png
-it = Italy.png
+gd = Grenada.png
+ge = Georgia.png
+gf = French-Guiana.png
+gg = Guernsey.png
+gh = Ghana.png
+gi = Gibraltar.png
+gl = Greenland.png
+gm = Gambia.png
+gn = Guinea.png
+gp = Guadeloupe.png
+gq = Equatorial-Guinea.png
+gr = Greece.png
+gs = South-Georgia-and-South-Sandwich.png
+gt = Guatemala.png
+gu = Guam.png
+gw = Guinea-Bissau.png
+gy = Guyana.png
+hk = Hong-Kong.png
+hm = Heard-Island-and-McDonald.png
+hn = Honduras.png
+hr = Croatia.png
+ht = Haiti.png
+hu = Hungary.png
+id = Indonesia.png
+ie = Ireland.png
+il = Israel.png
+im = Isle-of-Man.png
 in = India.png
+io = British-Indian-Ocean-Territory.png
+iq = Iraq.png
+ir = Iran.png
+is = Iceland.png
+it = Italy.png
 ja = Japan.png
+je = Jersey.png
+jm = Jamaica.png
+jo = Jordan.png
+jp = Japan.png
+ke = Kenya.png
+kg = Kyrgyzstan.png
+kh = Cambodia.png
+ki = Kiribati.png
+km = Comoros.png
+kn = St-Kitts-Nevis.png
 ko = South-Korea.png
+#kp = Korea,-Democratic-People's-Republic-of.png
+#kr = Korea,-Republic-of.png
+kw = Kuwait.png
+ky = Cayman-Islands.png
+kz = Kazakhstan.png
+la = Lao-People's-Democratic-Republic.png
+lb = Lebanon.png
+lc = Saint-Lucia.png
+li = Liechtenstein.png
+lk = Sri-Lanka.png
+lr = Liberia.png
+ls = Lesotho.png
+lt = Lithuania.png
+lu = Luxembourg.png
+lv = Latvia.png
+ly = Libya.png
+ma = Morocco.png
+mc = Monaco.png
+md = Moldova.png
+me = Montenegro.png
+mf = Saint-Martin-French.png
+mg = Madagascar.png
+mh = Marshall-Islands.png
+mk = Macedonia.png
+ml = Mali.png
+mm = Myanmar-Burma.png
+mn = Mongolia.png
+mo = Macao.png
+mp = Northern-Mariana.png
+mq = Martinique.png
+mr = Mauritania.png
+ms = Montserrat.png
+mt = Malta.png
+mu = Mauritius.png
+mv = Maldives.png
+mw = Malawi.png
+mx = Mexico.png
+my = Malaysia.png
+mz = Mozambique.png
+na = Namibia.png
+nc = New-Caledonia.png
+ne = Niger.png
+nf = Norfolk-Island.png
+ng = Nigeria.png
+ni = Nicaragua.png
 nl = Netherlands.png
 no = Norway.png
+np = Nepal.png
+nr = Nauru.png
+nu = Niue.png
+nz = New-Zealand.png
+om = Oman.png
+pa = Panama.png
+pe = Peru.png
+pf = French-Polynesia.png
+pg = Papua-New-Guinea.png
+ph = Philippines.png
+pk = Pakistan.png
 pl = Poland.png
+pm = Saint-Pierre-and-Miquelon.png
+pn = Pitcairn.png
+pr = Puerto-Rico.png
+ps = Palestine.png
 pt-br = Brazil.png
 pt = Portugal.png
+pw = Palau.png
+py = Paraguay.png
+qa = Qatar.png
+re = Réunion.png
+ro = Romania.png
+rs = Serbia.png
 ru = Russian-Federation.png
+rw = Rwanda.png
+sa = Saudi-Arabia.png
+sb = Solomon-Islands.png
+sc = Seychelles.png
+sd = Sudan.png
+se = Sweden.png
+sg = Singapore.png
+sh = Saint-Helena.png
+si = Slovenia.png
+sj = Svalbard-and-Jan-Mayen.png
+sk = Slovakia.png
+sl = Sierra-Leone.png
+sm = San-Marino.png
+sn = Senegal.png
+so = Somalia.png
+sr = Suriname.png
+ss = Southern-Sudan.png
+st = Sao-Tome-Principe.png
+sv = El-Salvador.png
 sv = Sweden.png
+sx = Sint-Maarten.png
+sy = Syrian-Arab-Republic.png
+sz = Eswatini.png
+tc = Turks-and-Caicos-Islands.png
+td = Chad.png
+tf = French-Southern-Territories.png
+tg = Togo.png
+th = Thailand.png
+tj = Tajikistan.png
+tk = Tokelau.png
+tl = Timor-Leste.png
+tm = Turkmenistan.png
+tn = Tunisia.png
+to = Tonga.png
 tr = Turkey.png
+tr = Türkiye.png
+tt = Trinidad-Tobago.png
+tv = Tuvalu.png
+tw = Taiwan.png
+tz = Tanzania.png
 ua = Ukraine.png
+ug = Uganda.png
+um = United-States-Minor-Outlying.png
 us = United-States-of-America.png
-cn = China.png
+uy = Uruguay.png
+uz = Uzbekistan.png
+va = Holy-See.png
+vc = St-Vincent-the-Grenadines.png
+#ve = Venezuela-Bolivarian.png
+vg = Virgin-Islands-British.png
+vi = Virgin-Islands-US.png
+vn = Viet-Nam.png
+vu = Vanuatu.png
+wf = Wallis-and-Futuna.png
+ws = Samoa.png
+ye = Yemen.png
+yt = Mayotte.png
 za = South-Africa.png
-zh-cn = China.png
-zh-tw = Taiwan.png
+zh = China.png
+zm = Zambia.png
+zw = Zimbabwe.png
 
-# Afghanistan.png
 # African-Union.png
-# Aland.png
-# Albania.png
 # Alderney.png
-# Algeria.png
-# American-Samoa.png
-# Andorra.png
-# Angola.png
-# Anguilla.png
-# Antarctica.png
-# Antigua-Barbuda.png
 # Arab-League.png
-# Argentina.png
-# Armenia.png
-# Aruba.png
 # ASEAN.png
-# Austria.png
-# Azerbaijan.png
 # Bahamas.png
-# Bahrain.png
-# Bangladesh.png
-# Barbados.png
 # Basque-Country.png
-# Belarus.png
-# Belgium.png
-# Belize.png
-# Benin.png
-# Bermuda.png
-# Bhutan.png
-# Bolivia.png
-# Bosnia-Herzegovina.png
-# Botswana.png
-# Bouvet.png
-# British-Indian-Ocean-Territory.png
-# Brunei.png
-# Burkina-Faso.png
-# Burundi.png
 # Cambodja.png
-# Cameroon.png
 # Cape-Verde.png
 # CARICOM.png
 # Catalonia.png
-# Cayman-Islands.png
-# Central-African-Republic.png
-# Chad.png
-# Chile.png
-# Christmas.png
 # CIS.png
-# Cocos-Keeling.png
-# Colombia.png
 # Commonwealth.png
-# Comoros.png
 # Congo-Brazzaville.png
 # Congo-Kinshasa-Zaire.png
-# Cook-Islands.png
-# Costa-Rica.png
 # Cote-d-Ivoire.png
-# Croatia.png
-# Cuba.png
 # Curacao.png
-# Cyprus.png
-# Djibouti.png
-# Dominican-Republic.png
-# Dominica.png
-# Ecuador.png
-# Egypt.png
-# El-Salvador.png
 # England.png
-# Equatorial-Guinea.png
-# Eritrea.png
-# Estonia.png
-# Ethiopia.png
 # European-Union.png
-# Falkland-Malvinas.png
 # FAO.png
 # Faroes.png
-# Fiji.png
-# French-Guiana.png
 # French-Southern-and-Antarctic-Lands.png
-# Gabon.png
 # Galicia.png
-# Gambia.png
-# Georgia.png
-# Ghana.png
-# Gibraltar.png
-# Greece.png
-# Greenland.png
-# Grenada.png
-# Guadeloupe.png
-# Guam.png
-# Guatemala.png
-# Guernsey.png
-# Guinea-Bissau.png
-# Guinea.png
-# Guyana.png
-# Haiti.png
-# Heard-Island-and-McDonald.png
-# Honduras.png
-# Hong-Kong.png
-# Hungary.png
 # IAEA.png
-# Iceland.png
 # IHO.png
-# Indonesia.png
-# Iran.png
-# Iraq.png
-# Ireland.png
 # Islamic-Conference.png
-# Isle-of-Man.png
-# Israel.png
-# Jamaica.png
-# Jersey.png
-# Jordan.png
-# Kazakhstan.png
-# Kenya.png
-# Kiribati.png
 # Kosovo.png
-# Kuwait.png
-# Kyrgyzstan.png
 # Laos.png
-# Latvia.png
-# Lebanon.png
-# Lesotho.png
-# Liberia.png
-# Libya.png
-# Liechtenstein.png
-# Lithuania.png
-# Luxembourg.png
-# Macao.png
-# Macedonia.png
-# Madagascar.png
-# Malawi.png
-# Malaysia.png
-# Maldives.png
-# Mali.png
-# Malta.png
-# Marshall-Islands.png
-# Martinique.png
-# Mauritania.png
-# Mauritius.png
-# Mayotte.png
-# Mexico.png
-# Micronesia.png
-# Moldova.png
-# Monaco.png
-# Mongolia.png
-# Montenegro.png
-# Montserrat.png
-# Morocco.png
-# Mozambique.png
-# Myanmar-Burma.png
-# Namibia.png
 # NATO.png
-# Nauru.png
-# Nepal.png
 # Netherlands-Antilles.png
-# New-Caledonia.png
-# New-Zealand.png
-# Nicaragua.png
-# Nigeria.png
-# Niger.png
-# Niue.png
-# Norfolk.png
-# Northern-Cyprus.png
 # Northern-Ireland.png
-# Northern-Mariana.png
 # North-Korea.png
 # OAS.png
 # OECD.png
 # Olimpic-Movement.png
-# Oman.png
 # OPEC.png
-# Pakistan.png
-# Palau.png
-# Palestine.png
-# Panama.png
-# Papua-New-Guinea.png
-# Paraguay.png
-# Peru.png
-# Philippines.png
-# Pitcairn.png
-# Puerto-Rico.png
-# Qatar.png
 # Red-Cross.png
 # Reunion.png
-# Romania.png
-# Rwanda.png
 # Saint-Barthelemy.png
-# Saint-Helena.png
-# Saint-Lucia.png
-# Saint-Martin-French.png
-# Saint-Pierre-and-Miquelon.png
-# Samoa.png
-# San-Marino.png
-# Sao-Tome-Principe.png
-# Saudi-Arabia.png
 # Scotland.png
-# Senegal.png
-# Serbia.png
-# Seychelles.png
-# Sierra-Leone.png
-# Singapore.png
-# Sint-Maarten.png
-# Slovakia.png
-# Slovenia.png
-# Solomon-Islands.png
-# Somalia.png
 # Somaliland.png
-# South-Africa.png
-# Southern-Sudan.png
-# South-Georgia-and-South-Sandwich.png
-# Sri-Lanka.png
-# St-Kitts-Nevis.png
-# St-Vincent-the-Grenadines.png
-# Sudan.png
-# Suriname.png
-# Svalbard-and-Jan-Mayen.png
 # Swaziland.png
-# Switzerland.png
 # Syria.png
 # Tahiti-French-Polinesia.png
-# Tajikistan.png
-# Tanzania.png
-# Thailand.png
-# Timor-Leste.png
-# Togo.png
-# Tokelau.png
-# Tonga.png
-# Trinidad-Tobago.png
 # Tristan-da-Cunha.png
-# Tunisia.png
-# Turkmenistan.png
-# Turks-and-Caicos-Islands.png
-# Tuvalu.png
-# Uganda.png
 # UNESCO.png
 # UNICEF.png
-# United-Arab-Emirates.png
 # United-Nations.png
-# United-States-Minor-Outlying.png
-# Uruguay.png
-# Uzbekistan.png
-# Vanuatu.png
 # Vatican-City.png
-# Venezuela.png
-# Viet-Nam.png
-# Virgin-Islands-British.png
-# Virgin-Islands-US.png
 # Wales.png
-# Wallis-and-Futuna.png
-# Western-Sahara.png
 # WHO.png
 # WTO.png
-# Yemen.png
-# Zambia.png
-# Zimbabwe.png

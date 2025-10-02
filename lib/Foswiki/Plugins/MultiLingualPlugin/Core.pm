@@ -1,6 +1,6 @@
 # Plugin for Foswiki - The Free and Open Source Wiki, http://foswiki.org/
 #
-# MultiLingualPlugin is Copyright (C) 2013-2024 Michael Daum http://michaeldaumconsulting.com
+# MultiLingualPlugin is Copyright (C) 2013-2025 Michael Daum http://michaeldaumconsulting.com
 #
 # This program is free software; you can redistribute it and/or
 # modify it under the terms of the GNU General Public License
@@ -440,6 +440,7 @@ sub getFlagImage {
 sub getFlag {
   my ($this, $key) = @_;
 
+  $key = lc($key);
   my $flag;
   my $alias = $Foswiki::cfg{MultiLingualPlugin}{Aliases}{$key};
 

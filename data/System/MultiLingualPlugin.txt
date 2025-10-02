@@ -1,4 +1,4 @@
-%META:TOPICINFO{author="ProjectContributor" comment="" date="1531750625" format="1.1"  version="1"}%
+%META:TOPICINFO{author="ProjectContributor" comment="" date="1759392405" format="1.1"  version="1"}%
 ---+!! %TOPIC%
 %FORMFIELD{"Description"}%
 
@@ -210,6 +210,7 @@ in his/her browser or the value of ={DefaultLanguage}= as configured to this plu
 %$DEPENDENCIES%
 
 ---++ Change History
+|  02 Oct 2025 | extended flags mapping as far as available |
 |  30 Apr 2024 | added more language flags |
 |  17 Jan 2024 | improved reading web lexicon |
 |  16 Jul 2018 | don't use retired language codes, us aliases instead; sync user interface by default; a few performance fixes; added =SITELEXICON= preference setting |
@@ -230,7 +231,7 @@ in his/her browser or the value of ={DefaultLanguage}= as configured to this plu
 %META:FIELD{name="Release" title="Release" value="%25$RELEASE%25"}%
 %META:FIELD{name="Description" title="Description" value="%25$SHORTDESCRIPTION%25"}%
 %META:FIELD{name="Repository" title="Repository" value="https://github.com/foswiki/%25TOPIC%25"}%
-%META:FIELD{name="Copyright" title="Copyright" value="&copy; 2013-2024 Michael Daum"}%
+%META:FIELD{name="Copyright" title="Copyright" value="&copy; 2013-2025 Michael Daum"}%
 %META:FIELD{name="License" title="License" value="[[http://www.gnu.org/licenses/gpl.html][GPL (Gnu General Public License)]]"}%
 %META:FIELD{name="Home" title="Home" value="Foswiki:Extensions/%25TOPIC%25"}%
 %META:FIELD{name="Support" title="Support" value="Foswiki:Support/%25TOPIC%25"}%
